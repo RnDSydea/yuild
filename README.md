@@ -22,7 +22,7 @@ To run Yuild locally, you’ll need:
 
 1. Clone the repository:
     ```bash
-    git clone https://github.com/RnDSydea/y-uild.git
+    git clone https://github.com/RnDSydea/yuild.git
     cd yuild
     ```
 
