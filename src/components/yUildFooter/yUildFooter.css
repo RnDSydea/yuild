@@ -1,0 +1,17 @@
+.sap-card-footer {
+    background-color: #fff;
+    padding: 16px;
+    border-top: 1px solid #ddd;
+    display: flex;
+    justify-content: right;
+    gap: 20px;  
+}
+
+.material-card-footer {
+    padding: 16px;
+    text-align: left;
+    display: flex;
+    justify-content: right;
+    gap: 20px;
+}
+  

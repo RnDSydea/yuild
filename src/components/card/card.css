@@ -1,0 +1,22 @@
+.sap-card {
+    border: 1px solid #ccc;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 50vw;
+}
+
+.material-card {
+    border: 1px solid #e8eaee;
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0px 2px 1px -1px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 1px 3px 0px rgba(0, 0, 0, 0.12);
+    width: 50vw;
+}
+  
+  
+
+  
+  
+  
+  

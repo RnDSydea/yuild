@@ -1,0 +1,574 @@
+.main-container {
+  width: 100%;
+  height: auto;
+  display: flex;
+  flex-direction: row;
+  background-color: #fff;
+}
+
+.components-container {
+  /* padding: 2rem 0rem 2rem 2rem;
+    width: 15%;
+    background-color: #efefef;
+    border-right: 1px solid #a6a6a6;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto; */
+  width: 15%;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  background: #262626;
+  padding: 1rem;
+  clip-path: border-box;
+  overflow: auto;
+}
+
+.tile {
+  /* background-color: #f5f5f5;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 5px;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 60%;
+    box-shadow: 0px 2px 1px -1px rgba(0,0,0,0.2),0px 1px 1px 0px rgba(0,0,0,0.14),0px 1px 3px 0px rgba(0,0,0,0.12); */
+  color: #fff;
+  align-items: center;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  border-radius: 0.3rem;
+  padding: 0.5rem;
+  transition: all 0.1s ease-in-out;
+}
+
+.tile p {
+  margin: 0;
+}
+
+.tile:hover {
+  background-color: #fece2f;
+  color: #141414;
+  cursor: all-scroll;
+  .row-drag-component {
+    left: 1rem;
+  }
+}
+
+.row-drag-component {
+  align-items: center;
+  display: flex;
+  align-items: center;
+  position: relative;
+  left: 0rem;
+  transition: left 0.3s ease-in-out;
+}
+
+.drag-icon {
+  height: 15px;
+  width: auto;
+  object-fit: contain;
+  display: flex;
+}
+
+.drag-and-drop-container {
+  width: 70%;
+  padding: 0rem 1.5rem;
+  margin-top: 1rem;
+}
+
+.component-details-column {
+  /* padding: 2rem 0rem 2rem 2rem;
+    width: 15%;
+    background-color: #efefef;
+    border-right: 1px solid #a6a6a6;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto; */
+  width: 15%;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  background: #262626;
+  padding: 1rem;
+  padding-bottom: 3rem;
+  clip-path: border-box;
+  overflow: auto;
+}
+
+/* .drag-and-drop-zone {
+    padding: 2rem;
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    grid-template-rows: repeat(36, 1fr); 
+  } */
+
+.btn-download-container {
+  display: flex;
+  gap: 1rem;
+}
+
+.grid-cell {
+  /* background-color: #ffffff;
+    border-top: 1px solid #ccc; */
+  aspect-ratio: 1/1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* height: 7rem; */
+  border: 1px solid transparent;
+  box-sizing: border-box;
+  color: #f2f2f2;
+  transition: all 0.1s ease-in-out;
+  box-sizing: border-box;
+}
+
+.grid-cell.editable {
+  border: 0.5px solid #f6f6f6;
+}
+
+/* .grid-cell:hover{
+    background-color: #ccc;
+  } */
+
+.grid-cell.highlight {
+  /* border: 1px dashed red; */
+  background-color: #008e3b8b;
+  color: #008e3b8b;
+  border: 1px solid transparent;
+}
+
+.grid-cell.occupied {
+  background-color: #ae00008c;
+}
+
+.title {
+  float: left;
+}
+
+.overlay-container {
+  position: absolute;
+}
+
+.component-overlay {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  /* background: orange; */
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  cursor: pointer;
+  transition: box-shadow 0.3s ease;
+  &::after {
+    content: "";
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 9999999;
+    &:hover {
+      border: 1px solid green;
+    }
+  }
+}
+
+.component-overlay:hover {
+  box-shadow: inset 0 0 0 2px rgba(0, 0, 255, 1);
+}
+.component-overlay.selected {
+  filter: drop-shadow(2px 4px 6px #b5b5b5);
+}
+
+.button-container {
+  /* display: flex;
+    gap: 1rem;
+    flex-direction: row; */
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  right: -35px;
+  background: #f6f6f6;
+  padding: 5px;
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+  display: inline-grid;
+  gap: 0.5rem;
+}
+
+.icon-patch {
+  width: 25px;
+  height: auto;
+  cursor: pointer;
+}
+
+.trash-icon {
+  fill: #cd0000;
+  width: 15px;
+  height: auto;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+  &:hover {
+    fill: #dc0000;
+  }
+}
+
+.drag-sel-icon {
+  fill: #0067cd;
+  transition: all 0.3s ease-in-out;
+}
+.drag-sel-icon:hover {
+  fill: #0078ef;
+}
+
+.delete-icon-container,
+.move-icon-container {
+  position: absolute;
+  right: 0;
+  z-index: 999;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0.6rem;
+  border-radius: 8px;
+}
+
+.delete-icon-container {
+  border: 1px solid rgb(185, 0, 0);
+  background-color: red;
+}
+
+.move-icon-container {
+  border: 1px solid rgb(0, 59, 185);
+  background-color: rgb(0, 60, 255);
+}
+
+.delete-icon {
+  width: 16px;
+  height: 16px;
+  filter: invert(1);
+}
+
+.delete-icon-container,
+.delete-icon {
+  cursor: pointer;
+}
+
+.box-page {
+  box-shadow: 1px 1px 5px #a6a6a6;
+}
+
+.yuild-header {
+  background-color: #080808;
+  padding: 1rem;
+  display: flex;
+  justify-content: space-between;
+  color: #fff;
+}
+
+.box-render-yuild-component {
+  display: flex;
+  align-items: start;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.comp-col-props {
+  width: 100%;
+  color: #e6e6e6;
+}
+
+.props-comp-label {
+  font-size: 0.7rem;
+  margin: 0;
+  margin-bottom: 0.3rem;
+}
+
+.props-comp-topic {
+  font-size: 1rem;
+  margin: 0;
+  font-weight: bold;
+}
+
+.row-comp-props {
+  border-bottom: 1px solid rgb(61, 61, 61);
+  padding: 0.5rem 0;
+}
+
+.box-spacing-props {
+  width: 30px;
+  height: 20px;
+}
+
+.input-props-comp {
+  padding: 0.5rem;
+  border-radius: 0.3rem;
+  outline: none;
+  box-shadow: none;
+  background: #262626;
+  color: #e6e6e6;
+  border: 1px solid #e6e6e6;
+}
+
+.yuild-d-block {
+  display: block;
+}
+.yuild-d-flex {
+  display: flex;
+}
+.yuild-d-inline {
+  display: inline;
+}
+.yuild-d-grid {
+  display: grid;
+}
+.yuild-flex-dir-row {
+  flex-direction: row;
+}
+.yuild-flex-dir-row-reverse {
+  flex-direction: row-reverse;
+}
+.yuild-flex-dir-column {
+  flex-direction: column;
+}
+.yuild-flex-dir-column-reverse {
+  flex-direction: column-reverse;
+}
+.yuild-vertical-align-center {
+  align-items: center;
+}
+.yuild-vertical-align-start {
+  align-items: flex-start;
+}
+.yuild-vertical-align-end {
+  align-items: flex-end;
+}
+.yuild-vertical-align-stretch {
+  align-items: stretch;
+}
+.yuild-horizontal-align-center {
+  justify-content: center;
+}
+.yuild-horizontal-align-start {
+  justify-content: flex-start;
+}
+.yuild-horizontal-align-end {
+  justify-content: flex-end;
+}
+.yuild-horizontal-align-space-between {
+  justify-content: space-between;
+}
+
+/* The switch - the box around the slider */
+.yuild-toggle-container {
+  width: 51px;
+  height: 31px;
+  position: relative;
+}
+
+/* Hide default HTML checkbox */
+.yuild-toggle-checkbox {
+  opacity: 0;
+  width: 0;
+  height: 0;
+  position: absolute;
+}
+
+.yuild-toggle-switch {
+  width: 100%;
+  height: 100%;
+  display: block;
+  background-color: #e9e9eb;
+  border-radius: 16px;
+  cursor: pointer;
+  transition: all 0.2s ease-out;
+}
+
+/* The slider */
+.yuild-toggle-slider {
+  width: 27px;
+  height: 27px;
+  position: absolute;
+  left: calc(50% - 27px / 2 - 10px);
+  top: calc(50% - 27px / 2);
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.15), 0px 3px 1px rgba(0, 0, 0, 0.06);
+  transition: all 0.2s ease-out;
+  cursor: pointer;
+}
+
+.yuild-toggle-checkbox:checked + .yuild-toggle-switch {
+  background-color: #34c759;
+}
+
+.yuild-toggle-checkbox:checked + .yuild-toggle-switch .yuild-toggle-slider {
+  left: calc(50% - 27px / 2 + 10px);
+  top: calc(50% - 27px / 2);
+}
+
+.logo-github {
+  height: 1.5rem;
+  width: 1.5rem;
+}
+
+.key-item-component {
+  margin: 0;
+  color: #f6f6f6;
+  text-transform: capitalize;
+  font-size: 0.7rem;
+  font-weight: bold;
+}
+
+.row-key-component {
+  padding: 1rem 0;
+  &:first-child {
+    padding-top: 0;
+  }
+}
+
+.btn-toggle {
+  background: #262626;
+  width: 100%;
+  outline: none;
+  box-shadow: none;
+  border: 1px solid #f6f6f6;
+  padding: 0.5rem;
+  color: #f6f6f6;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+  font-weight: bold;
+  &:hover {
+    background: #141414;
+  }
+  &.selected {
+    background: #fece2f;
+    color: #141414;
+    border-color: #fece2f;
+  }
+}
+
+.color-picker-container {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px;
+  border: 1px solid #e6e6e6;
+  border-radius: 0.3rem;
+
+  input[type="color"] {
+    margin-right: 8px;
+    -webkit-appearance: none;
+    border: none;
+    width: auto;
+    height: auto;
+    cursor: pointer;
+    background: none;
+    &::-webkit-color-swatch-wrapper {
+      padding: 0;
+      width: 30px;
+      height: 30px;
+    }
+    &::-webkit-color-swatch {
+      border: 1px solid #bfc9d9;
+      padding: 0;
+    }
+  }
+
+  input[type="text"] {
+    border: none;
+    width: 100%;
+  }
+}
+
+.yuild-logo-header {
+  height: 30px;
+  width: auto;
+}
+
+.btn-header-yuild {
+  background: transparent;
+  width: 2.3rem;
+  box-shadow: none;
+  outline: none;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.3s ease-in-out;
+  padding: 0;
+  &:hover {
+    transform: scale(1.05);
+  }
+}
+
+.box-editor {
+  border: 1px solid red;
+  height: 30vh;
+  width: 100%;
+  position: absolute;
+  z-index: 9;
+  top: 50vh;
+  left: 0;
+}
+
+.box-editor {
+  background-color: #1e1e1e;
+  color: #d4d4d4;
+  padding: 16px;
+  border-radius: 6px;
+  overflow-x: auto;
+  font-family: 'Courier New', monospace;
+  font-size: 14px;
+  line-height: 1.5;
+  white-space: pre;
+}
+
+.keyword {
+  color: #c678dd;
+}
+
+.string {
+  color: #98c379;
+}
+
+.property {
+  color: #61afef;
+}
+
+.editor-text {
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  color: #d4d4d4;
+  background-color: #1e1e1e;
+  padding: 15px;
+  border-radius: 5px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.keyword {
+  color: #f92672; /* Colore per le parole chiave */
+  font-weight: bold;
+}
+
+.string {
+  color: #e6db74; /* Colore per le stringhe */
+}
+.capital-word {
+  color: #66d9ef; /* Colore per parole che iniziano con maiuscola */
+}

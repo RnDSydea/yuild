@@ -1,0 +1,87 @@
+.sap-table {
+  width: 100%;
+  border-collapse: collapse;
+  border-radius: 12px;
+  overflow: hidden;
+  text-align: left;
+}
+
+.sap-table-row {
+  background-color: #fff;
+}
+
+/* .sap-table-row:nth-child(even) {
+  background-color: #e8e8e8;
+} */
+
+.sap-table-row:first-of-type .sap-table-cell {
+  border-top: none;
+}
+
+.sap-table-row:last-of-type .sap-table-cell {
+  border-bottom: none;
+}
+
+.sap-table-cell {
+  padding: 10px;
+  border-bottom: 1px solid #e5e5e5;
+  border-right: 1px solid #e5e5e5;
+}
+
+.sap-table-cell:last-child, .material-table-cell {
+  border-right: none;
+}
+
+/*Material Style*/
+
+.material-table {
+  width: 100%;
+  border-collapse: collapse;
+  border-radius: 4px;
+  overflow: hidden;
+  text-align: left;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0px 2px 1px -1px rgba(0,0,0,0.2),0px 1px 1px 0px rgba(0,0,0,0.14),0px 1px 3px 0px rgba(0,0,0,0.12);
+}
+
+/* .material-table-header {
+  text-align: left;
+  font-weight: 500;
+} */
+
+.material-table-row {
+  background-color: #fff;
+}
+
+/* .material-table-row:nth-child(even) {
+  background-color: #fafafa;
+} */
+
+.material-table-row:first-of-type .material-table-cell {
+  border-top: none;
+}
+
+.material-table-row:last-of-type .material-table-cell {
+  border-bottom: none;
+}
+
+.material-table-cell {
+  padding: 12px;
+  border-bottom: 1px solid #e0e0e0;
+  /* border-right: 1px solid #e5e5e5; */
+}
+
+.sap-table-container{
+  border: 1px solid #e5e5e5;
+  border-radius: 12px;
+}
+
+.material-table-container{
+  border: 1px solid #e5e5e5;
+  border-radius: 4px;
+}
+
+.sort-icon{
+  width: 1rem;
+  filter: invert(20%) brightness(115%);
+}

@@ -1,0 +1,439 @@
+/*SAP STYLE*/
+.sap-button {
+    padding: .5rem 1rem;
+    font-size: 0.875rem;
+    border-radius: .5rem;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: background-color 0.2s ease-in-out;
+    font-weight: bold;
+    box-sizing: border-box;
+    clip-path: border-box;
+}
+
+/*Default*/  
+.sap-button-default {
+    background-color: #0070F2;
+    color: white;
+}
+
+.sap-button-default:hover {
+    background-color: #0056b3;
+}
+
+.sap-button-default:active{
+    background-color: #fff;
+    color: #0064D9;
+    border: 1px solid #0064D9;
+}
+
+.sap-button-default:disabled{
+    background-color: #0070F2;
+    color: white;
+    cursor: auto;
+    opacity: 0.4;
+}
+
+.sap-button-default:focus{
+    box-shadow: inset 0 0 0 2px white;
+}
+
+/*Secondary*/
+  
+.sap-button-secondary {
+    background-color: #fff;
+    color: #0064D9;
+    border: 1px solid #BCC3CA;
+}
+
+.sap-button-secondary:hover {
+    background-color: #EAECEE;
+    border:1px solid #BCC3CA
+}
+.sap-button-secondary:active{
+    background-color: #fff;
+    color: #0064D9;
+    border: 1px solid #0064D9;
+}
+.sap-button-secondary:disabled{
+    background-color: white;
+    color: #0064D9;
+    border: 1px solid #BCC3CA;
+    cursor: auto;
+    opacity: 0.4;
+}
+.sap-button-secondary:focus{
+    box-shadow: inset 0 0 0 2px #0032A5; /* Bordo interno bianco */
+}
+
+/*Tertiary*/
+
+.sap-button-tertiary {
+    background-color: transparent;
+    color: #0064D9;
+}
+
+.sap-button-tertiary:hover {
+    background-color: #EAECEE;
+    border:1px solid #BCC3CA
+}
+
+.sap-button-tertiary:active{
+    background-color: #fff;
+    color: #0064D9;
+    border: 1px solid #0064D9;
+}
+
+.sap-button-tertiary:disabled{
+    background-color: transparent;
+    color: #0070F2;
+    cursor: auto;
+    border: none;
+    opacity: 0.4;
+}
+.sap-button-tertiary:focus{
+    box-shadow: inset 0 0 0 2px #0032A5; /* Bordo interno bianco */
+}
+
+
+/*Success*/
+
+.sap-button-success {
+    background-color: #EBF5CB;
+    color: #256F3A;
+    border:1px solid #DBEDA1;
+}
+
+.sap-button-success:hover {
+    background-color: #E3F1B6;
+    border:1px solid #DBEDA1
+}
+
+.sap-button-success:active{
+    background-color: #fff;
+    color: #256F3A;
+    border: 1px solid #256F3A;
+}
+
+.sap-button-success:disabled {
+    background-color: #EBF5CB;
+    color: #256F3A;
+    border:1px solid #DBEDA1;
+    cursor: auto;
+    opacity: 0.4;
+}
+
+.sap-button-success:focus{
+    box-shadow: inset 0 0 0 2px #0032A5; /* Bordo interno bianco */
+}
+
+/*error*/
+  
+.sap-button-error {
+    background-color: #FFD6E9;
+    color: #AA0808;
+    border: 1px solid #FFC1DF;
+}
+
+.sap-button-error:hover {
+    background-color: #FFBCDC;
+    
+}
+
+.sap-button-error:active{
+    background-color: #fff;
+    color: #AA0808;
+    border: 1px solid #E90B0B;
+}
+
+.sap-button-error:disabled {
+    background-color: #FFD6E9;
+    color: #AA0808;
+    border: 1px solid #FFC1DF;
+    cursor: auto;
+    opacity: 0.4;
+}
+
+.sap-button-error:focus{
+    box-shadow: inset 0 0 0 2px #0032A5; /* Bordo interno bianco */
+}
+
+/*Warning*/  
+.sap-button-warning {
+    background-color: #FFF3B7;
+    color: #B95100;
+    border: 1px solid #FFEA84;
+}
+
+.sap-button-warning:hover {
+    background-color: #FFEE9E;
+    border: 1px solid #FFE66B;
+}
+
+.sap-button-warning:active{
+    background-color: #fff;
+    color: #B95100;
+    border: 1px solid #DD6100;
+}
+
+.sap-button-warning:disabled {
+    background-color: #FFF3B7;
+    color: #B95100;
+    border: 1px solid #FFEA84;
+    cursor: auto;
+    opacity: 0.4;
+}
+
+.sap-button-warning:focus{
+    box-shadow: inset 0 0 0 2px #0032A5; /* Bordo interno bianco */
+}
+  
+  
+/*MATERIAL STYLE*/
+
+.material-button {
+    padding: 6px 16px;
+    font-size: 14px;
+    font-size: 0.875rem;
+    line-height: 1.75;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.02857em;
+    border-radius: 4px;
+    border: none;
+    outline: none;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+    /* box-shadow: 0px 3px 1px -2px rgba(0,0,0,0.2), 0px 2px 2px 0px rgba(0,0,0,0.14), 0px 1px 5px 0px rgba(0,0,0,0.12); */
+    min-width: 64px;
+  }
+
+  /*Default*/  
+.material-button-default {
+    background-color: #1976d2;
+    color: white;
+    overflow: hidden;
+    position: relative;
+}
+
+.material-button-default:hover {
+    background-color: #1565c0;
+    box-shadow: 0px 2px 4px -1px rgba(0, 0, 0, 0.2), 0px 4px 5px 0px rgba(0, 0, 0, 0.14), 0px 1px 10px 0px rgba(0, 0, 0, 0.12);
+}
+
+.material-button-default:active{
+    transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, box-shadow 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, border-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+}
+
+.material-button-default:disabled {
+    background-color: #00000038;
+    color: #1f1f1f54;
+    cursor: auto;
+    opacity: 0.8;
+    box-shadow: none;
+}
+
+.ripple-effect-default{
+    position: absolute;
+    background: #ffffff05;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    border-radius: 50%;
+    animation: ripple .8s linear ;
+  }
+
+  /*Secondary*/  
+  .material-button-secondary {
+    border: 1px solid #1976d280;
+    color: #1976d2;
+    background-color: white;
+    overflow: hidden;
+    position: relative;
+}
+
+.material-button-secondary:hover {
+    background-color: #1976d20a;
+    border: 1px solid #1976d2;
+
+}
+
+.material-button-secondary:active{
+    box-shadow: 0px 5px 5px -3px rgba(0, 0, 0, 0.2), 0px 8px 10px 1px rgba(0, 0, 0, 0.14), 0px 3px 14px 2px rgba(0, 0, 0, 0.12);
+}
+
+.material-button-secondary:disabled {
+    background-color: transparent;
+    color: #00000042;
+    border: 1px solid #00000012;
+    cursor: auto;
+    opacity: 0.8;
+    box-shadow: none;
+}
+
+
+.ripple-effect-secondary{
+    position: absolute;
+    background-color: #99cafc0e;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    border-radius: 50%;
+    animation: ripple .8s linear ;
+  }
+
+  /* Tertiary */
+  .material-button-tertiary {
+    background-color: transparent;
+    color: #1976d2;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .material-button-tertiary:hover {
+    background-color: #f6fafd;
+  }
+
+  .material-button-tertiary:active{
+    box-shadow: 0px 5px 5px -3px rgba(0, 0, 0, 0.2), 0px 8px 10px 1px rgba(0, 0, 0, 0.14), 0px 3px 14px 2px rgba(0, 0, 0, 0.12);
+  }
+
+  .material-button-tertiary:disabled {
+    background-color: transparent;
+    color: #00000042;
+    cursor: auto;
+    opacity: 0.8;
+    box-shadow: none;
+}
+  
+  .ripple-effect-tertiary{
+    position: absolute;
+    background-color: #69b1fa11;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    border-radius: 50%;
+    animation: ripple .8s linear ;
+  }
+
+  /* success */
+  .material-button-success {
+    background-color: #2e7d32;
+    color: #fff;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .material-button-success:hover {
+    background-color: #1b5e20;
+  }
+
+  .material-button-success:active{
+    box-shadow: 0px 5px 5px -3px rgba(0, 0, 0, 0.2), 0px 8px 10px 1px rgba(0, 0, 0, 0.14), 0px 3px 14px 2px rgba(0, 0, 0, 0.12);
+    }
+
+    .material-button-success:disabled {
+        background-color: #55b95871;
+        color: #fff;
+        cursor: auto;
+        opacity: 0.8;
+        box-shadow: none;
+    }
+  
+  .ripple-effect-success{
+    position: absolute;
+    background-color: #ffffff05;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    border-radius: 50%;
+    animation: ripple .8s linear ;
+  }
+
+  /* error */
+  .material-button-error {
+    background-color: #d32f2f;
+    color: #fff;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .material-button-error:hover {
+    background-color: #c62828;
+  }
+
+  .material-button-error:active{
+    box-shadow: 0px 5px 5px -3px rgba(0, 0, 0, 0.2), 0px 8px 10px 1px rgba(0, 0, 0, 0.14), 0px 3px 14px 2px rgba(0, 0, 0, 0.12);
+    }
+
+  .material-button-error:disabled {
+    background-color: #d32f2f79;
+    color: #fff;
+    cursor: auto;
+    opacity: 0.8;
+    box-shadow: none;
+    }
+  
+  .ripple-effect-error{
+    position: absolute;
+    background-color: #ef535007;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    border-radius: 50%;
+    animation: ripple .8s linear ;
+  }
+
+  /* warning */
+  .material-button-warning {
+    background-color: #ff9800;
+    color: #fff;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .material-button-warning:hover {
+    background-color: #e65100;
+  }
+
+  .material-button-warning:active{
+    box-shadow: 0px 5px 5px -3px rgba(0, 0, 0, 0.2), 0px 8px 10px 1px rgba(0, 0, 0, 0.14), 0px 3px 14px 2px rgba(0, 0, 0, 0.12);
+    }
+    .material-button-warning:disabled {
+        background-color: #ff990077;
+        color: #fff;
+        cursor: auto;
+        opacity: 0.8;
+        box-shadow: none;
+    }
+  .ripple-effect-warning{
+    position: absolute;
+    background-color: #ff99001c;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    border-radius: 50%;
+    animation: ripple .8s linear ;
+  }
+
+
+
+
+  @keyframes ripple {
+    0% {
+        width: 0;
+        height: 0;
+        opacity: 0.5;
+    }100%{
+        width: 500px;
+        height: 500px;
+        opacity: 0;
+    }
+  }
+
+  
+  
+  
+  
+
+  
+
+  
+  
+  
+
+  

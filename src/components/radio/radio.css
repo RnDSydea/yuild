@@ -1,0 +1,266 @@
+/*SAP STYLE*/
+.sap-radio-default,
+.sap-radio-error,
+.sap-radio-success,
+.sap-radio-warning,
+.sap-radio-information,
+.sap-radio-readOnly {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 1px solid #556B81;
+  background-color: #fff;
+  position: relative;
+  cursor: pointer;
+  margin-right: 8px;
+}
+
+.sap-radio-default:hover{
+    border: 1px solid #0064D9;
+}
+
+.sap-radio-default:checked::before,
+.sap-radio-error:checked::before,
+.sap-radio-success:checked::before,
+.sap-radio-warning:checked::before,
+.sap-radio-information:checked::before, 
+.sap-radio-readOnly:checked::before{
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #0064D9; 
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* Error */
+.sap-radio-error {
+  border: 2px solid#E90B0B;
+  background-color: #FFEAF4;
+
+}
+
+.sap-radio-error:checked::before {
+  background-color: #E90B0B;
+}
+
+/* Success*/
+.sap-radio-success {
+    border: 2px solid #30914C;
+    background-color: #F5FAE5;
+}
+
+.sap-radio-success:checked::before {
+  background-color: #30914C;
+}
+
+/*Warning */
+.sap-radio-warning {
+  border: 2px solid #DD6100;
+  background-color: #FFF8D6;
+}
+
+.sap-radio-warning:checked::before {
+  background-color: #131E29;
+}
+
+/*Information*/
+.sap-radio-information {
+    border: 2px solid #0070F2;
+    background-color: #E1F4FF;
+}
+
+.sap-radio-information:checked::before {
+  background-color: #0070F2;
+}
+
+/*Read only*/
+
+.sap-radio-readOnly {
+    border: 2px dashed #556B81;
+    background-color: #EAECEE;
+    cursor: auto;
+}
+
+.sap-radio-readOnly:checked::before {
+  background-color: #758CA4;
+}
+
+/*Disabled*/
+
+.sap-radio-default:disabled,
+.sap-radio-error:disabled,
+.sap-radio-success:disabled,
+.sap-radio-warning:disabled,
+.sap-radio-information:disabled {
+  border-color: #e0e0e0;
+  background-color: #f5f5f5;
+  cursor: not-allowed;
+}
+
+.sap-radio-default:disabled:checked::before,
+.sap-radio-error:disabled:checked::before,
+.sap-radio-success:disabled:checked::before,
+.sap-radio-warning:disabled:checked::before,
+.sap-radio-information:disabled:checked::before {
+  background-color: #e0e0e0;
+}
+/*Material STYLE*/
+.material-radio-default,
+.material-radio-error,
+.material-radio-success,
+.material-radio-warning,
+.material-radio-information,
+.material-radio-readOnly {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 1px solid #556B81;
+  background-color: #fff;
+  position: relative;
+  cursor: pointer;
+  margin-right: 8px;
+}
+
+.material-radio-default:hover{
+    border: 1px solid #0064D9;
+}
+
+.material-radio-default:checked::before,
+.material-radio-error:checked::before,
+.material-radio-success:checked::before,
+.material-radio-warning:checked::before,
+.material-radio-information:checked::before, 
+.material-radio-readOnly:checked::before{
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #0064D9; 
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* Error */
+.material-radio-error {
+  border: 2px solid#d32f2f;
+  background-color: #fff;
+
+}
+
+.material-radio-error:checked::before {
+  background-color: #c62828;
+}
+
+.material-label-error {
+  color: #d32f2f;
+}
+
+
+/* Success*/
+.material-radio-success {
+    border: 2px solid #2e7d32;
+    background-color: #fff;
+}
+
+.material-radio-success:checked::before {
+  background-color: #1b5e20;
+}
+
+.material-label-success {
+    color: #2e7d32;
+  }
+
+/*Warning */
+.material-radio-warning {
+  border: 2px solid #ed6c02;
+  background-color: #fff;
+}
+
+.material-radio-warning:checked::before {
+  background-color: #e65100;
+}
+
+.material-label-warning::before {
+    color: #ed6c02;
+}
+
+/*Information*/
+.material-radio-information {
+    border: 2px solid #0070F2;
+    background-color: #E1F4FF;
+}
+
+.material-radio-information:checked::before {
+  background-color: #0070F2;
+}
+
+/*Read only*/
+
+.material-radio-readOnly {
+    border: 2px solid #556B81;
+    background-color: #EAECEE;
+    cursor: auto;
+}
+
+.material-radio-readOnly:checked::before {
+  background-color: #758CA4;
+}
+
+/*Disabled*/
+
+.material-radio-default:disabled,
+.material-radio-error:disabled,
+.material-radio-success:disabled,
+.material-radio-warning:disabled,
+.material-radio-information:disabled {
+  border-color: #e0e0e0;
+  background-color: #f5f5f5;
+  cursor: not-allowed;
+}
+
+.material-radio-default:disabled:checked::before,
+.material-radio-error:disabled:checked::before,
+.material-radio-success:disabled:checked::before,
+.material-radio-warning:disabled:checked::before,
+.material-radio-information:disabled:checked::before {
+  background-color: #e0e0e0;
+}
+
+
+
+  /* Cambia il colore della label quando il radio è selezionato */
+  input[type="radio"].material-radio-default:checked + .material-label-default {
+    color: #007bff; /* Cambia colore per la selezione */
+  }
+  
+  
+  input[type="radio"].material-radio-error:checked + .material-label-error {
+    color: #d32f2f;
+  }
+   
+  input[type="radio"].material-radio-success:checked + .material-label-success {
+    color: #388e3c;
+  }
+  
+  .material-label-default, .material-label-error, .material-label-success, .sap-label-warning, .material-label-information {
+    color: #000;
+  }
+  
+  input[type="radio"].material-radio-warning:checked + .material-label-warning {
+    color: #ed6c02;
+  }
+  
+  input[type="radio"].material-radio-information:checked + .material-label-information {
+    color: #0288d1;
+  }
+

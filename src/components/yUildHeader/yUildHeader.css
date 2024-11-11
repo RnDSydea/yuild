@@ -1,0 +1,10 @@
+.sap-card-header {
+    background-color: #fff;
+    padding: 5px 10px;
+    border-bottom: 1px solid #ddd;
+
+}
+
+.material-card-header { 
+    padding: 5px 10px;
+}

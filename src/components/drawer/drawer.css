@@ -1,0 +1,135 @@
+.sap-drawer-overlay,
+.material-drawer-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  transition: opacity 0.3s ease;
+  display: flex;
+  justify-content: flex-start; /* Cambia qui per far scorrere il drawer da sinistra */
+  opacity: 0;
+  visibility: hidden;
+}
+
+.sap-drawer-overlay.visible,
+.material-drawer-overlay.visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+.sap-drawer,
+.material-drawer {
+  width: 300px;
+  background: white;
+  height: 100%;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
+  transform: translateX(-100%); /* Cambia la direzione di uscita del drawer */
+  transition: transform 0.3s ease;
+}
+
+.sap-drawer.slide-in,
+.material-drawer.slide-in {
+  transform: translateX(0); /* Quando il drawer è aperto, si posiziona a 0 */
+}
+
+.sap-drawer.slide-out,
+.material-drawer.slide-out {
+  transform: translateX(-100%); /* Quando il drawer è chiuso, torna a sinistra */
+}
+
+.sap-drawer-header,
+.material-drawer-header {
+  padding: 16px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.sap-drawer-close,
+.material-drawer-close {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  z-index: 1;
+}
+
+.sap-drawer-content,
+.material-drawer-content {
+  padding: 16px;
+}
+
+.sap-drawerIcon{
+    width: 1rem;
+    filter: invert(38%) sepia(100%) saturate(5000%) hue-rotate(212deg) brightness(85%) contrast(110%);
+    border: 2px solid #0064D9;
+    border-radius: 30px;
+    padding: 10px;
+    margin-top: 10px;
+}
+
+.material-drawerIcon{
+    width: 1rem;
+    filter: invert(52%) sepia(5%) saturate(8%) hue-rotate(0deg) brightness(92%) contrast(90%);
+}
+
+ /* {
+    position: relative;
+    width: 240px;
+    height: 360px;
+    background: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    transition: 0.5s;
+  } */
+.active {
+    width: 80px;
+}
+ .list-item {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 2rem 0 0 0 ;
+  }
+ ul li {
+    position: relative;
+    list-style: none;
+    width: 100%;
+}
+ ul li:hover {
+    background: #efefef;
+    
+}
+ ul li a {
+    position: relative;
+    display: block;
+    width: 100%;
+    display: flex;
+    text-decoration: none;
+    color: #1D2D3E;
+    font-weight: 600;
+}
+ ul li a .icon {
+    position: relative;
+    display: block;
+    min-width: 80px;
+    height: 60px;
+    line-height: 70px;
+    text-align: center;
+}
+
+ ul li a .title {
+    position: relative;
+    display: block;
+    opacity: 1;
+    height: 60px;
+    line-height: 60px;
+    white-space: nowrap;
+    transition: .5s;
+}
+.active ul li a .title {
+    opacity: 0;
+  }
+

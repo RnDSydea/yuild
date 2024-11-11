@@ -1,0 +1,266 @@
+/*SAP STYLE*/
+.checkbox-wrapper{
+    display: inline-flex;
+}
+
+.sap-checkbox-default,
+.sap-checkbox-error,
+.sap-checkbox-success,
+.sap-checkbox-warning,
+.sap-checkbox-information,
+.sap-checkbox-readOnly {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  border: 1px solid #556B81;
+  background-color: #fff;
+  position: relative;
+  cursor: pointer;
+  margin-right: 8px;
+  padding-top: 8px;
+  border-radius: 4px;
+}
+
+.sap-checkbox-default:hover{
+    border: 1px solid #0064D9;
+}
+
+.sap-checkbox-default:checked::before,
+.sap-checkbox-error:checked::before,
+.sap-checkbox-success:checked::before,
+.sap-checkbox-warning:checked::before,
+.sap-checkbox-information:checked::before, 
+.sap-checkbox-readOnly:checked::before{
+  content: '';
+  width: 8px;
+  height: 8px;
+  background-color: #0064D9; 
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* Error */
+.sap-checkbox-error {
+  border: 2px solid#E90B0B;
+  background-color: #FFEAF4;
+
+}
+
+.sap-checkbox-error:checked::before {
+  background-color: #E90B0B;
+}
+
+/* Success*/
+.sap-checkbox-success {
+    border: 2px solid #30914C;
+    background-color: #F5FAE5;
+}
+
+.sap-checkbox-success:checked::before {
+  background-color: #30914C;
+}
+
+/*Warning */
+.sap-checkbox-warning {
+  border: 2px solid #DD6100;
+  background-color: #FFF8D6;
+}
+
+.sap-checkbox-warning:checked::before {
+  background-color: #131E29;
+}
+
+/*Information*/
+.sap-checkbox-information {
+    border: 2px solid #0070F2;
+    background-color: #E1F4FF;
+}
+
+.sap-checkbox-information:checked::before {
+  background-color: #0070F2;
+}
+
+/*Read only*/
+
+.sap-checkbox-readOnly {
+    border: 2px dashed #556B81;
+    background-color: #EAECEE;
+    cursor: auto;
+}
+
+.sap-checkbox-readOnly:checked::before {
+  background-color: #758CA4;
+}
+
+/*Disabled*/
+
+.sap-checkbox-default:disabled,
+.sap-checkbox-error:disabled,
+.sap-checkbox-success:disabled,
+.sap-checkbox-warning:disabled,
+.sap-checkbox-information:disabled {
+  border-color: #e0e0e0;
+  background-color: #f5f5f5;
+  cursor: not-allowed;
+}
+
+.sap-checkbox-default:disabled:checked::before,
+.sap-checkbox-error:disabled:checked::before,
+.sap-checkbox-success:disabled:checked::before,
+.sap-checkbox-warning:disabled:checked::before,
+.sap-checkbox-information:disabled:checked::before {
+  background-color: #e0e0e0;
+}
+/*Material STYLE*/
+.material-checkbox-default,
+.material-checkbox-error,
+.material-checkbox-success,
+.material-checkbox-warning,
+.material-checkbox-information,
+.material-checkbox-readOnly {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  border: 1px solid #556B81;
+  background-color: #fff;
+  position: relative;
+  cursor: pointer;
+  margin-right: 8px;
+}
+
+.material-checkbox-default:hover{
+    border: 1px solid #0064D9;
+}
+
+.material-checkbox-default:checked::before,
+.material-checkbox-error:checked::before,
+.material-checkbox-success:checked::before,
+.material-checkbox-warning:checked::before,
+.material-checkbox-information:checked::before, 
+.material-checkbox-readOnly:checked::before{
+  content: '';
+  width: 8px;
+  height: 8px;
+  background-color: #0064D9; 
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* Error */
+.material-checkbox-error {
+  border: 2px solid#d32f2f;
+  background-color: #fff;
+
+}
+
+.material-checkbox-error:checked::before {
+  background-color: #c62828;
+}
+
+.material-label-error {
+  color: #d32f2f;
+}
+
+
+/* Success*/
+.material-checkbox-success {
+    border: 2px solid #2e7d32;
+    background-color: #fff;
+}
+
+.material-checkbox-success:checked::before {
+  background-color: #1b5e20;
+}
+
+.material-label-success {
+    color: #2e7d32;
+  }
+
+/*Warning */
+.material-checkbox-warning {
+  border: 2px solid #ed6c02;
+  background-color: #fff;
+}
+
+.material-checkbox-warning:checked::before {
+  background-color: #e65100;
+}
+
+.material-label-warning::before {
+    color: #ed6c02;
+}
+
+/*Information*/
+.material-checkbox-information {
+    border: 2px solid #0070F2;
+    background-color: #fff;
+}
+
+.material-checkbox-information:checked::before {
+  background-color: #0070F2;
+}
+
+/*Read only*/
+
+.material-checkbox-readOnly {
+    border: 2px solid #556B81;
+    background-color: #EAECEE;
+    cursor: auto;
+}
+
+.material-checkbox-readOnly:checked::before {
+  background-color: #758CA4;
+}
+
+/*Disabled*/
+
+.material-checkbox-default:disabled,
+.material-checkbox-error:disabled,
+.material-checkbox-success:disabled,
+.material-checkbox-warning:disabled,
+.material-checkbox-information:disabled {
+  border-color: #e0e0e0;
+  background-color: #f5f5f5;
+  cursor: not-allowed;
+}
+
+.material-checkbox-default:disabled:checked::before,
+.material-checkbox-error:disabled:checked::before,
+.material-checkbox-success:disabled:checked::before,
+.material-checkbox-warning:disabled:checked::before,
+.material-checkbox-information:disabled:checked::before {
+  background-color: #e0e0e0;
+}
+
+  input[type="checkbox"].material-checkbox-default:checked + .material-label-default {
+    color: #007bff; 
+  }
+  
+  
+  input[type="checkbox"].material-checkbox-error:checked + .material-label-error {
+    color: #d32f2f;
+  }
+   
+  input[type="checkbox"].material-checkbox-success:checked + .material-label-success {
+    color: #388e3c;
+  }
+  
+  .material-label-default, .material-label-error, .material-label-success, .sap-label-warning, .material-label-information {
+    color: #000;
+  }
+  
+  input[type="checkbox"].material-checkbox-warning:checked + .material-label-warning {
+    color: #ed6c02;
+  }
+  
+  input[type="checkbox"].material-checkbox-information:checked + .material-label-information {
+    color: #0288d1;
+  }
+

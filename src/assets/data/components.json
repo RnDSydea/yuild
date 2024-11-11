@@ -1,0 +1,309 @@
+[
+  {
+    "inputs": {
+      "components": [
+        {
+          "nome": "Button",
+          "lunghezza": 2,
+          "altezza": 1,
+          "props": {
+            "theme": "sap",
+            "label": "Button",
+            "variant": "default",
+            "disabled": false,
+            "layout": {
+              "display": "block",
+              "direction": "row",
+              "vertical-align": "center",
+              "horizontal-align": "center"
+            },
+            "spacing": {
+              "margin": {
+                "all": "",
+                "top": "",
+                "bottom": "",
+                "left": "",
+                "right": ""
+              },
+              "padding": {
+                "all": "",
+                "top": "",
+                "bottom": "",
+                "left": "",
+                "right": ""
+              }
+            }
+          }
+        },
+        {
+          "nome": "Checkbox",
+          "lunghezza": 3,
+          "altezza": 1,
+          "props": {
+            "theme": "sap",
+            "label": "Information",
+            "variant": "information",
+            "layout": {
+              "display": "block",
+              "direction": "row",
+              "vertical-align": "center",
+              "horizontal-align": "center"
+            },
+            "spacing": {
+              "margin": {
+                "all": "",
+                "top": "",
+                "bottom": "",
+                "left": "",
+                "right": ""
+              },
+              "padding": {
+                "all": "",
+                "top": "",
+                "bottom": "",
+                "left": "",
+                "right": ""
+              }
+            }
+          }
+        },
+        {
+          "nome": "RadioButton",
+          "lunghezza": 3,
+          "altezza": 1,
+          "props": {
+            "theme": "sap",
+            "label": "Information",
+            "variant": "information",
+            "layout": {
+              "display": "block",
+              "direction": "row",
+              "vertical-align": "center",
+              "horizontal-align": "center"
+            },
+            "spacing": {
+              "margin": {
+                "all": "",
+                "top": "",
+                "bottom": "",
+                "left": "",
+                "right": ""
+              },
+              "padding": {
+                "all": "",
+                "top": "",
+                "bottom": "",
+                "left": "",
+                "right": ""
+              }
+            }
+          }
+        },
+        {
+          "nome": "Select",
+          "lunghezza": 7,
+          "altezza": 2,
+          "props": {
+            "theme": "sap",
+            "options": [
+              { "value": "option1", "label": "Option 1" },
+              { "value": "option2", "label": "Option 2" },
+              { "value": "option3", "label": "Option 3" }
+            ],
+            "variant": "default",
+            "layout": {
+              "display": "block",
+              "direction": "row",
+              "vertical-align": "center",
+              "horizontal-align": "center"
+            },
+            "spacing": {
+              "margin": {
+                "all": "",
+                "top": "",
+                "bottom": "",
+                "left": "",
+                "right": ""
+              },
+              "padding": {
+                "all": "",
+                "top": "",
+                "bottom": "",
+                "left": "",
+                "right": ""
+              }
+            }
+          }
+        },
+        {
+          "nome": "Input",
+          "lunghezza": 5,
+          "altezza": 2,
+          "props": {
+            "theme": "sap",
+            "label": "Input",
+            "value": "",
+            "placeholder": "Enter text here...",
+            "required": false,
+            "disabled": false,
+            "readOnly": false,
+            "variant": "default",
+            "layout": {
+              "display": "block",
+              "direction": "row",
+              "vertical-align": "center",
+              "horizontal-align": "center"
+            },
+            "spacing": {
+              "margin": {
+                "all": "",
+                "top": "",
+                "bottom": "",
+                "left": "",
+                "right": ""
+              },
+              "padding": {
+                "all": "",
+                "top": "",
+                "bottom": "",
+                "left": "",
+                "right": ""
+              }
+            }
+          }
+        },
+        {
+          "nome": "TextArea",
+          "lunghezza": 4,
+          "altezza": 2,
+          "props": {
+            "theme": "sap",
+            "label": "Input",
+            "value": "",
+            "placeholder": "Enter text here...",
+            "required": false,
+            "disabled": false,
+            "readOnly": false,
+            "variant": "default",
+            "layout": {
+              "display": "block",
+              "direction": "row",
+              "vertical-align": "center",
+              "horizontal-align": "center"
+            },
+            "spacing": {
+              "margin": {
+                "all": "",
+                "top": "",
+                "bottom": "",
+                "left": "",
+                "right": ""
+              },
+              "padding": {
+                "all": "",
+                "top": "",
+                "bottom": "",
+                "left": "",
+                "right": ""
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "display": {
+      "components":[
+        {
+          "nome": "Avatar",
+          "lunghezza": 1,
+          "altezza": 1
+        },
+        {
+          "nome": "Chip",
+          "lunghezza": 1,
+          "altezza": 1
+        },
+        {
+          "nome": "Divider",
+          "lunghezza": 12,
+          "altezza": 1
+        },
+        {
+          "nome": "Table",
+          "lunghezza": 10,
+          "altezza": 6
+        }
+      ]
+    }
+  },
+  {
+    "feedback": {
+      "components":[
+        {
+          "nome": "Alert",
+          "lunghezza": 3,
+          "altezza": 1
+        },
+        {
+          "nome": "Dialog",
+          "lunghezza": 4,
+          "altezza": 3
+        },
+        {
+          "nome": "Toast",
+          "lunghezza": 3,
+          "altezza": 1
+        }
+      ]
+    }
+  },
+  {
+    "surfaces": {
+      "components":[
+        {
+          "nome": "Accordion",
+          "lunghezza": 4,
+          "altezza": 1
+        },
+        {
+          "nome": "Card",
+          "lunghezza": 3,
+          "altezza": 3
+        }
+      ]
+    }
+  },
+  {
+    "navigation": {
+      "components":[
+        {
+          "nome": "Drawer",
+          "lunghezza": 3,
+          "altezza": 10
+        },
+        {
+          "nome": "Breadcrumbs",
+          "lunghezza": 12,
+          "altezza": 1
+        },
+        {
+          "nome": "Link",
+          "lunghezza": 2,
+          "altezza": 1
+        },
+        {
+          "nome": "Menu",
+          "lunghezza": 2,
+          "altezza": 1
+        },
+        {
+          "nome": "Tabs",
+          "lunghezza": 12,
+          "altezza": 1
+        }
+      ]
+    }
+  }
+]
