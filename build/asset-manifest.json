@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/y-uild/static/css/main.41df8d58.css",
-    "main.js": "/y-uild/static/js/main.7cda5ab2.js",
+    "main.css": "/y-uild/static/css/main.2999fd8d.css",
+    "main.js": "/y-uild/static/js/main.79a8726b.js",
     "static/js/453.fd2b3029.chunk.js": "/y-uild/static/js/453.fd2b3029.chunk.js",
     "static/media/Outfit-VariableFont_wght.ttf": "/y-uild/static/media/Outfit-VariableFont_wght.00c2ed1a3bf798b0da27.ttf",
     "static/media/yuild-logo-light.svg": "/y-uild/static/media/yuild-logo-light.27e8c01b31e28b75ddf8c491c33b43d4.svg",
@@ -22,12 +22,12 @@
     "static/media/user-solid.svg": "/y-uild/static/media/user-solid.dc14d35c7e995aa50144327e879653a4.svg",
     "static/media/check-solid.svg": "/y-uild/static/media/check-solid.fedb9de01da6ef51d41a26fd7dca0eed.svg",
     "static/media/chevron-down-solid.svg": "/y-uild/static/media/chevron-down-solid.b5d704eda71690d56092205b3a298019.svg",
-    "main.41df8d58.css.map": "/y-uild/static/css/main.41df8d58.css.map",
-    "main.7cda5ab2.js.map": "/y-uild/static/js/main.7cda5ab2.js.map",
+    "main.2999fd8d.css.map": "/y-uild/static/css/main.2999fd8d.css.map",
+    "main.79a8726b.js.map": "/y-uild/static/js/main.79a8726b.js.map",
     "453.fd2b3029.chunk.js.map": "/y-uild/static/js/453.fd2b3029.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.41df8d58.css",
-    "static/js/main.7cda5ab2.js"
+    "static/css/main.2999fd8d.css",
+    "static/js/main.79a8726b.js"
   ]
 }
