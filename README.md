@@ -11,6 +11,7 @@ Users can configure and personalize each component and download the generated Re
 - **Drag-and-Drop Building**: Quickly drag and place components into your page layout.
 - **Custom Components**: Each component is fully customizable to match your desired style and functionality.
 - **React Code Export**: Download the generated React code for the website you've built.
+- **SAP UI5 Style**: Components with SAP UI5 style.
 
 ## Requirements 🛠️
 
