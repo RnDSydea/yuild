@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Button from '../button/button';
-import './alert.css';
+import './alert.scss';
 
 const Alert = ({ header, body, labelBtnConfirm ='', labelBtnCancel= '',  theme = 'sap', variant="default", showAlert, onClose }) => {
   const [isVisible, setIsVisible] = useState(true);

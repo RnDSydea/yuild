@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import './drawer.css';
+import './drawer.scss';
 
 const Drawer = ({ theme = 'sap', isOpen, onClose, children, closeBtn }) => {
   const [visible, setVisible] = useState(isOpen);

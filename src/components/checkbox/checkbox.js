@@ -1,5 +1,5 @@
 import React from 'react';
-import './checkbox.css';
+import './checkbox.scss';
 
 const Checkbox = ({ checked, onChange, label, variant = 'default', disabled = false, theme = 'sap' }) => {
   const labelClass =  `${theme}-label-${variant}`

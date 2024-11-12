@@ -1,5 +1,5 @@
 import React from 'react';
-import './textarea.css';
+import './textarea.scss';
 
 const TextArea = ({ value, onChange, placeholder = '', variant = 'default', disabled = false, theme = 'sap', readOnly = false }) => {
   const textareaClass = `${theme}-textarea ${theme}-textarea-${variant} ${disabled ? `${theme}-textarea-${variant}-disabled` : ''}`;

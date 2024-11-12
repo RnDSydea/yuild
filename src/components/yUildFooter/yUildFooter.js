@@ -1,5 +1,5 @@
 import React from 'react';
-import './yUildFooter.css';
+import './yUildFooter.scss';
 import { useTheme } from '../card/themeContext';
 
 const YuildFooter = ({ children }) => {

@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import './dialog.css';
+import './dialog.scss';
 import xmark from '../../assets/xmark-solid.svg'
 import { ThemeProvider } from './themeContext';
 

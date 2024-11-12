@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './table.css';
+import './table.scss';
 import ArrowUp from '../../assets/arrow-up-solid.svg'
 import ArrowDown from '../../assets/arrow-down-solid.svg'
 

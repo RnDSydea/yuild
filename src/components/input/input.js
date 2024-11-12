@@ -1,5 +1,5 @@
 import React from 'react';
-import './input.css';
+import './input.scss';
 
 const Input = ({ value, onChange, placeholder = '', label = '', required = false, variant = 'default', disabled = false, readOnly = false, theme = 'sap' }) => {
   const inputClass = `${theme}-input ${theme}-input-${variant} ${disabled ? `${theme}-input-${variant}-disabled` : ''} ${readOnly ? `${theme}-input-${variant}-readOnly` : ''}`;

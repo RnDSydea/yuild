@@ -1,5 +1,5 @@
 import React from 'react';
-import './card.css';
+import './card.scss';
 import { ThemeProvider } from './themeContext';
 
 const Card = ({ theme = 'sap', children }) => {

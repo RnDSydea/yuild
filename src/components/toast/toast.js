@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import './toast.css';
+import './toast.scss';
 import xmark from '../../assets/xmark-solid.svg';
 import success from '../../assets/check-solid.svg';
 import warning from '../../assets/triangle-exclamation-solid.svg';

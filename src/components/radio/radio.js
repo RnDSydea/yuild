@@ -1,5 +1,5 @@
 import React from 'react';
-import './radio.css';
+import './radio.scss';
 
 const RadioButton = ({ checked, onChange, label, variant = 'default', disabled = false, readOnly = false, theme = 'sap' }) => {
   const labelClass =  `${theme}-label-${variant}`

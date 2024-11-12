@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react';
-import './button.css';
+import './button.scss';
 
 const Button = ({ label, onClick, variant = 'default', disabled = false , theme = 'sap', spacing = {} }) => {
   /*useEffect(() => {
