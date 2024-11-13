@@ -19,6 +19,9 @@
 .y-justify-content-end {
   justify-content: flex-end;
 }
+.y-justify-content-between {
+  justify-content: space-between;
+}
 
 .y-gap-1 {
   gap: 0.25rem;
@@ -136,14 +139,14 @@
   padding-bottom: 2rem;
 }
 
-.y-w-100{
+.y-w-100 {
   width: 100%;
 }
 
-.y-m-0{
+.y-m-0 {
   margin: 0 !important;
 }
 
-.y-relative{
+.y-relative {
   position: relative;
 }

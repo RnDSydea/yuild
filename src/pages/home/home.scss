@@ -7,17 +7,6 @@
 }
 
 .components-container {
-  /* padding: 2rem 0rem 2rem 2rem;
-    width: 15%;
-    background-color: #efefef;
-    border-right: 1px solid #a6a6a6;
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
-    position: sticky;
-    top: 0;
-    height: 100vh;
-    overflow-y: auto; */
   width: 15%;
   position: sticky;
   top: 0;
@@ -29,16 +18,6 @@
 }
 
 .tile {
-  /* background-color: #f5f5f5;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    padding: 5px;
-    text-align: center;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 60%;
-    box-shadow: 0px 2px 1px -1px rgba(0,0,0,0.2),0px 1px 1px 0px rgba(0,0,0,0.14),0px 1px 3px 0px rgba(0,0,0,0.12); */
   color: #fff;
   align-items: center;
   display: flex;
@@ -47,18 +26,16 @@
   border-radius: 0.3rem;
   padding: 0.5rem;
   transition: all 0.1s ease-in-out;
-}
-
-.tile p {
-  margin: 0;
-}
-
-.tile:hover {
-  background-color: #fece2f;
-  color: #141414;
-  cursor: all-scroll;
-  .row-drag-component {
-    left: 1rem;
+  &:hover {
+    background-color: #e48205;
+    color: #141414;
+    cursor: all-scroll;
+    .row-drag-component {
+      left: 1rem;
+    }
+  }
+  & p {
+    margin: 0;
   }
 }
 
@@ -85,17 +62,6 @@
 }
 
 .component-details-column {
-  /* padding: 2rem 0rem 2rem 2rem;
-    width: 15%;
-    background-color: #efefef;
-    border-right: 1px solid #a6a6a6;
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
-    position: sticky;
-    top: 0;
-    height: 100vh;
-    overflow-y: auto; */
   width: 15%;
   position: sticky;
   top: 0;
@@ -107,26 +73,16 @@
   overflow: auto;
 }
 
-/* .drag-and-drop-zone {
-    padding: 2rem;
-    display: grid;
-    grid-template-columns: repeat(12, 1fr);
-    grid-template-rows: repeat(36, 1fr); 
-  } */
-
 .btn-download-container {
   display: flex;
   gap: 1rem;
 }
 
 .grid-cell {
-  /* background-color: #ffffff;
-    border-top: 1px solid #ccc; */
   aspect-ratio: 1/1;
   display: flex;
   align-items: center;
   justify-content: center;
-  /* height: 7rem; */
   border: 1px solid transparent;
   box-sizing: border-box;
   color: #f2f2f2;
@@ -138,12 +94,7 @@
   border: 0.5px solid #f6f6f6;
 }
 
-/* .grid-cell:hover{
-    background-color: #ccc;
-  } */
-
 .grid-cell.highlight {
-  /* border: 1px dashed red; */
   background-color: #008e3b8b;
   color: #008e3b8b;
   border: 1px solid transparent;
@@ -166,38 +117,50 @@
   width: 100%;
   height: 100%;
   z-index: 1;
-  /* background: orange; */
   display: flex;
   justify-content: start;
   align-items: center;
   cursor: pointer;
   transition: box-shadow 0.3s ease;
-  &::after {
-    content: "";
-    width: 100%;
-    height: 100%;
-    background: transparent;
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 9999999;
-    &:hover {
-      border: 1px solid green;
-    }
-  }
 }
 
 .component-overlay:hover {
   box-shadow: inset 0 0 0 2px rgba(0, 0, 255, 1);
+  .row-inner-tools {
+    opacity: 1;
+  }
 }
 .component-overlay.selected {
   filter: drop-shadow(2px 4px 6px #b5b5b5);
 }
 
+.button-drag-component {
+  background-color: #0067ff;
+  padding: 2px 5px;
+  border-radius: 5px;
+  width: max-content;
+  transition: background-color 0.2s ease-in-out;
+  & span {
+    font-size: 10px;
+    color: #fff;
+    font-weight: bold;
+  }
+  &:hover {
+    background-color: #0051cb;
+  }
+}
+
+.row-inner-tools {
+  width: auto;
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  right: 5px;
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out;
+}
+
 .button-container {
-  /* display: flex;
-    gap: 1rem;
-    flex-direction: row; */
   position: absolute;
   z-index: 1;
   top: 0;
@@ -376,14 +339,12 @@
   justify-content: space-between;
 }
 
-/* The switch - the box around the slider */
 .yuild-toggle-container {
   width: 51px;
   height: 31px;
   position: relative;
 }
 
-/* Hide default HTML checkbox */
 .yuild-toggle-checkbox {
   opacity: 0;
   width: 0;
@@ -401,7 +362,6 @@
   transition: all 0.2s ease-out;
 }
 
-/* The slider */
 .yuild-toggle-slider {
   width: 27px;
   height: 27px;
@@ -416,7 +376,7 @@
 }
 
 .yuild-toggle-checkbox:checked + .yuild-toggle-switch {
-  background-color: #34c759;
+  background-color: #e48205;
 }
 
 .yuild-toggle-checkbox:checked + .yuild-toggle-switch .yuild-toggle-slider {
@@ -459,9 +419,9 @@
     background: #141414;
   }
   &.selected {
-    background: #fece2f;
+    background: #e48205;
     color: #141414;
-    border-color: #fece2f;
+    border-color: #e48205;
   }
 }
 
@@ -532,7 +492,7 @@
   padding: 16px;
   border-radius: 6px;
   overflow-x: auto;
-  font-family: 'Courier New', monospace;
+  font-family: "Courier New", monospace;
   font-size: 14px;
   line-height: 1.5;
   white-space: pre;
@@ -562,13 +522,28 @@
 }
 
 .keyword {
-  color: #f92672; /* Colore per le parole chiave */
+  color: #f92672;
   font-weight: bold;
 }
 
 .string {
-  color: #e6db74; /* Colore per le stringhe */
+  color: #e6db74;
 }
 .capital-word {
-  color: #66d9ef; /* Colore per parole che iniziano con maiuscola */
+  color: #66d9ef;
+}
+
+.icon-arrow-menu {
+  height: 0.7rem;
+  width: auto;
+}
+
+.row-key-menu {
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+  padding: 0.5rem;
+  border-radius: 0.3rem;
+  &:hover {
+    background: #181818;
+  }
 }

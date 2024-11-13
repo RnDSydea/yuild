@@ -16,15 +16,10 @@ import Alert from "../../components/alert/alert";
 import Table from "../../components/table/table";
 import Dialog from "../../components/dialog/dialog";
 import Drawer from "../../components/drawer/drawer";
-// import HomeIcon from '../assets/house-solid.svg'
-// import User from '../assets/user-solid.svg'
-// import Comment from '../assets/comment-solid.svg'
-// import Info from '../assets/circle-info-solid.svg'
-// import Gear from '../assets/gear-solid.svg'
-// import Logout from '../assets/right-from-bracket-solid.svg'
-// import MoveIcon from '../assets/arrows-up-down-left-right-solid.svg'
-// import TrashIcon from '../../assets/trash-solid.svg';
+import TrashIcon from '../../assets/trash-solid.svg';
 import DownloadIcon from '../../assets/download-icon.svg';
+import ArrowUp from '../../assets/arrow-up.svg';
+import HandIcon from '../../assets/drag-hand.svg';
 import ComponentsData from "../../assets/data/components.json";
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
@@ -56,7 +51,7 @@ export const Home = () => {
   const [selecteIdPatch, setSelectedIdPatch] = useState('');
   const [currentCode, setCurrentCode] = useState({});
   const [currentCodeHighlight, setCurrentCodeHighlight] = useState('');
-   const [highlightedCode, setHighlightedCode] = useState('');
+  const [highlightedCode, setHighlightedCode] = useState('');
   const [toggleComponent, setToggleComponent] = useState(true);
   const [cssIncluded, setCssIncluded] = useState(true);
   const [backgroundColorPage, setBackgroundColorPage] = useState('#ffffff');
@@ -461,8 +456,6 @@ export const Home = () => {
     jsx += "  </div>\n);\n";
 
     return imports + jsx + "export default App;";
-
-    // {theme="sap",label="Button",variant="default",disabled=false,layout={display="block",direction="row","vertical-align":"center","horizontal-align":"center"},spacing={margin={all="",top="",bottom="",left="",right=""},padding={all="",top="",bottom="",left="",right=""}}}
   };
 
   const highlightSyntax = (code) => {
@@ -551,11 +544,7 @@ export const Home = () => {
   };
 
   const handleColorChange = (newColor) => {
-    console.log(newColor.target.value);
     setBackgroundColorPage(newColor.target.value);
-    // setGlobalDataState((prevState) => (
-    //   {...prevState, style: {...prevState.style, [sections]: {...prevState.style[sections], [colorKey]: newColor.target.value}}}
-    // ));
   };
 
   return (
@@ -626,17 +615,16 @@ export const Home = () => {
         </div>
       </div>
 
-      {/* <div style={{background:'#000', color: '#fff', height: '100px', overflow: 'auto'}}>
-            {JSON.stringify(currentCode)}
-          </div> */}
-
       <div className="main-container">
         <div className="components-container">
           {ComponentsData.map((section, index) => (
             <div key={index}>
               {Object.entries(section).map(([key, value]) => (
                 <div key={key} className="row-key-component">
-                  <p className="key-item-component">{key}</p>
+                  <div className="y-d-flex y-gap-1 y-justify-content-between y-align-items-center row-key-menu">
+                    <p className="key-item-component">{key}</p>
+                    <img src={ArrowUp} className="icon-arrow-menu"></img>
+                  </div>
                   {value.components.map((component, idx) => (
                     <div
                       key={`tile-${index}-${idx}`}
@@ -662,18 +650,13 @@ export const Home = () => {
 
         <div className="drag-and-drop-container y-relative">
           <div className="box-editor">
-          <pre className="editor-text">{currentCodeHighlight}</pre>
-            {/* <pre className="editor-text">
-              {currentCodeHighlight}
-              <pre dangerouslySetInnerHTML={{ __html: currentCodeHighlight }} />
-            </pre> */}
+            <pre className="editor-text">{currentCodeHighlight}</pre>
           </div>
           <div className="y-container box-page" style={{backgroundColor: backgroundColorPage}}>
             {grid.map((row, index_row) => (
               <div className="y-row" key={index_row}>
                 {row.map((cell, index_cell) => (
                   <div
-                    // className={`grid-cell ${highlightsCell.find((e)=>e.row === index_row && e.columns===index_cell) ? 'highlight' : ''} y-col-${cell.lunghezza}`}
                     className={`grid-cell ${editorMode ? "editable" : ""} ${
                       highlightsCell.find(
                         (e) => e.row === index_row && e.columns === index_cell
@@ -742,6 +725,20 @@ export const Home = () => {
                       {ComponentToRender && (
                         <ComponentToRender {...overlay.props} />
                       )}
+                    </div>
+
+                    <div className="row-inner-tools y-d-flex y-gap-3 y-justify-content-between">
+                      <div className="button-drag-component y-d-flex y-gap-1 y-align-items-center">
+                        <div style={{width:'15px', height: 'auto'}}>
+                          <img src={HandIcon}></img>
+                        </div>
+                        <span>DRAG</span>
+                      </div>
+                      <div className="button-drag-component y-d-flex y-gap-1 y-align-items-center">
+                        <div style={{width:'15px', height: 'auto'}} className="y-d-flex " onClick={(e) => { e.stopPropagation(); handleDeletePatch(index)}}>
+                          <img src={TrashIcon}></img>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
