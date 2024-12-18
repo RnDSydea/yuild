@@ -359,7 +359,7 @@ export const Home = () => {
     // }
     // setCurrentCode(htmlString);
 
-    const htmlString = generateReactCode();
+    const htmlString = getComponentCode();
     setCurrentCode(htmlString);
 
     console.log(JSON.stringify(htmlString));
@@ -377,7 +377,7 @@ export const Home = () => {
     });
   };
 
-  const generateReactCode = () => {
+  const getComponentCode = () => {
     const usedComponents = new Set();
 
     patchObj.forEach((item) => {

@@ -4,7 +4,7 @@
       "components": [
         {
           "nome": "Button",
-          "lunghezza": 2,
+          "lunghezza": 3,
           "altezza": 1,
           "props": {
             "theme": "sap",
