@@ -1,0 +1,30 @@
+.sap-breadcrumbs ol,
+.material-breadcrumbs ol {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.875rem;
+}
+
+.sap-breadcrumbs li:not(:last-child)::after,
+.material-breadcrumbs li:not(:last-child)::after {
+  margin-left: 0.25rem;
+}
+
+.sap-breadcrumbs li:not(:last-child)::after { content: '/'; color: #8396a8; }
+.material-breadcrumbs li:not(:last-child)::after { content: '›'; color: rgba(0, 0, 0, 0.6); }
+
+.sap-breadcrumbs span[aria-current] { color: #32363a; }
+.material-breadcrumbs span[aria-current] { color: rgba(0, 0, 0, 0.87); }
+
+.sap-breadcrumbs-link { color: #0064d9; text-decoration: none; }
+.material-breadcrumbs-link { color: rgba(0, 0, 0, 0.6); text-decoration: none; }
+
+.sap-breadcrumbs-link:hover,
+.material-breadcrumbs-link:hover {
+  text-decoration: underline;
+}

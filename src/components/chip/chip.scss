@@ -1,0 +1,36 @@
+.sap-chip,
+.material-chip {
+  display: inline-flex;
+  align-items: center;
+  max-width: 100%;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.8rem;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  box-sizing: border-box;
+}
+
+.sap-chip {
+  border-radius: 0.5rem;
+  border: 1px solid #788fa6;
+  background-color: #fff;
+  color: #32363a;
+}
+
+.material-chip {
+  border-radius: 1rem;
+  background-color: #e0e0e0;
+  color: rgba(0, 0, 0, 0.87);
+}
+
+.sap-chip-success { border-color: #36a41d; background-color: #f5fae5; color: #256f3a; }
+.sap-chip-warning { border-color: #e76500; background-color: #fff8d6; color: #a93e00; }
+.sap-chip-error { border-color: #e90b0b; background-color: #ffeaf4; color: #aa0808; }
+.sap-chip-information { border-color: #0070f2; background-color: #e1f4ff; color: #0064d9; }
+
+.material-chip-success { background-color: #2e7d32; color: #fff; }
+.material-chip-warning { background-color: #ed6c02; color: #fff; }
+.material-chip-error { background-color: #d32f2f; color: #fff; }
+.material-chip-information { background-color: #0288d1; color: #fff; }

@@ -1,11 +1,25 @@
 [
   {
+    "layout": {
+      "components": [
+        {
+          "nome": "Section",
+          "lunghezza": 24,
+          "altezza": 16,
+          "props": {
+            "theme": "sap"
+          }
+        }
+      ]
+    }
+  },
+  {
     "inputs": {
       "components": [
         {
           "nome": "Button",
           "lunghezza": 3,
-          "altezza": 1,
+          "altezza": 3,
           "props": {
             "theme": "sap",
             "label": "Button",
@@ -38,7 +52,7 @@
         {
           "nome": "Checkbox",
           "lunghezza": 3,
-          "altezza": 1,
+          "altezza": 2,
           "props": {
             "theme": "sap",
             "label": "Information",
@@ -70,7 +84,7 @@
         {
           "nome": "RadioButton",
           "lunghezza": 3,
-          "altezza": 1,
+          "altezza": 2,
           "props": {
             "theme": "sap",
             "label": "Information",
@@ -102,7 +116,7 @@
         {
           "nome": "Select",
           "lunghezza": 7,
-          "altezza": 2,
+          "altezza": 5,
           "props": {
             "theme": "sap",
             "options": [
@@ -138,11 +152,10 @@
         {
           "nome": "Input",
           "lunghezza": 5,
-          "altezza": 2,
+          "altezza": 5,
           "props": {
             "theme": "sap",
             "label": "Input",
-            "value": "",
             "placeholder": "Enter text here...",
             "required": false,
             "disabled": false,
@@ -175,11 +188,10 @@
         {
           "nome": "TextArea",
           "lunghezza": 4,
-          "altezza": 2,
+          "altezza": 7,
           "props": {
             "theme": "sap",
             "label": "Input",
-            "value": "",
             "placeholder": "Enter text here...",
             "required": false,
             "disabled": false,
@@ -218,22 +230,70 @@
         {
           "nome": "Avatar",
           "lunghezza": 1,
-          "altezza": 1
+          "altezza": 3,
+          "props": {
+            "theme": "sap",
+            "initials": "AB",
+            "size": "medium"
+          }
         },
         {
           "nome": "Chip",
-          "lunghezza": 1,
-          "altezza": 1
+          "lunghezza": 2,
+          "altezza": 2,
+          "props": {
+            "theme": "sap",
+            "label": "Chip",
+            "variant": "default"
+          }
         },
         {
           "nome": "Divider",
           "lunghezza": 12,
-          "altezza": 1
+          "altezza": 1,
+          "props": {
+            "theme": "sap",
+            "orientation": "horizontal"
+          }
         },
         {
           "nome": "Table",
           "lunghezza": 10,
-          "altezza": 6
+          "altezza": 15,
+          "props": {
+            "theme": "sap",
+            "columns": [
+              {
+                "header": "ID",
+                "accessor": "id"
+              },
+              {
+                "header": "Name",
+                "accessor": "name"
+              },
+              {
+                "header": "Country",
+                "accessor": "country"
+              }
+            ],
+            "data": [
+              {
+                "id": 1,
+                "name": "Alice",
+                "country": "Italy"
+              },
+              {
+                "id": 2,
+                "name": "Bob",
+                "country": "Spain"
+              },
+              {
+                "id": 3,
+                "name": "Chiara",
+                "country": "France"
+              }
+            ]
+          }
         }
       ]
     }
@@ -243,18 +303,37 @@
       "components":[
         {
           "nome": "Alert",
-          "lunghezza": 3,
-          "altezza": 1
+          "lunghezza": 4,
+          "altezza": 3,
+          "props": {
+            "theme": "sap",
+            "buttonLabel": "Show alert",
+            "title": "Alert title",
+            "message": "Alert message",
+            "confirmLabel": "Confirm",
+            "cancelLabel": "Cancel"
+          }
         },
         {
           "nome": "Dialog",
           "lunghezza": 4,
-          "altezza": 3
+          "altezza": 3,
+          "props": {
+            "theme": "sap",
+            "buttonLabel": "Open dialog",
+            "title": "Dialog title",
+            "content": "Dialog content"
+          }
         },
         {
           "nome": "Toast",
           "lunghezza": 3,
-          "altezza": 1
+          "altezza": 3,
+          "props": {
+            "theme": "sap",
+            "message": "Message",
+            "variant": "default"
+          }
         }
       ]
     }
@@ -264,13 +343,22 @@
       "components":[
         {
           "nome": "Accordion",
-          "lunghezza": 4,
-          "altezza": 1
+          "lunghezza": 6,
+          "altezza": 8,
+          "props": {
+            "theme": "sap",
+            "title": "Accordion title",
+            "content": "Accordion content",
+            "defaultOpen": false
+          }
         },
         {
           "nome": "Card",
-          "lunghezza": 3,
-          "altezza": 3
+          "lunghezza": 8,
+          "altezza": 12,
+          "props": {
+            "theme": "sap"
+          }
         }
       ]
     }
@@ -280,28 +368,78 @@
       "components":[
         {
           "nome": "Drawer",
-          "lunghezza": 3,
-          "altezza": 10
+          "lunghezza": 4,
+          "altezza": 3,
+          "props": {
+            "theme": "sap",
+            "buttonLabel": "Open drawer",
+            "content": "Drawer content"
+          }
         },
         {
           "nome": "Breadcrumbs",
           "lunghezza": 12,
-          "altezza": 1
+          "altezza": 2,
+          "props": {
+            "theme": "sap",
+            "items": [
+              {
+                "label": "Home",
+                "to": "/"
+              },
+              {
+                "label": "Current page"
+              }
+            ]
+          }
         },
         {
           "nome": "Link",
           "lunghezza": 2,
-          "altezza": 1
+          "altezza": 2,
+          "props": {
+            "theme": "sap",
+            "label": "Link",
+            "to": "/"
+          }
         },
         {
           "nome": "Menu",
-          "lunghezza": 2,
-          "altezza": 1
+          "lunghezza": 8,
+          "altezza": 3,
+          "props": {
+            "theme": "sap",
+            "items": [
+              {
+                "label": "Home",
+                "to": "/"
+              },
+              {
+                "label": "About",
+                "to": "/about"
+              }
+            ],
+            "orientation": "horizontal"
+          }
         },
         {
           "nome": "Tabs",
           "lunghezza": 12,
-          "altezza": 1
+          "altezza": 8,
+          "props": {
+            "theme": "sap",
+            "tabs": [
+              {
+                "label": "Tab 1",
+                "content": "First tab content"
+              },
+              {
+                "label": "Tab 2",
+                "content": "Second tab content"
+              }
+            ],
+            "defaultActive": 0
+          }
         }
       ]
     }

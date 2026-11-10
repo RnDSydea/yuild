@@ -1,0 +1,15 @@
+export const dataEntryFormDefinitions = [
+  { id: 'breadcrumbs', type: 'Breadcrumbs', col: 0, row: 0, width: 24, height: 2 },
+  { id: 'first-name', type: 'Input', col: 0, row: 3, width: 11, height: 5 },
+  { id: 'last-name', type: 'Input', col: 13, row: 3, width: 11, height: 5 },
+  { id: 'email', type: 'Input', col: 0, row: 9, width: 11, height: 5 },
+  { id: 'country', type: 'Select', col: 13, row: 9, width: 11, height: 5 },
+  { id: 'city', type: 'Input', col: 0, row: 15, width: 7, height: 5 },
+  { id: 'zip-code', type: 'Input', col: 8, row: 15, width: 4, height: 5 },
+  { id: 'phone', type: 'Input', col: 13, row: 15, width: 11, height: 5 },
+  { id: 'notes', type: 'TextArea', col: 0, row: 21, width: 24, height: 7 },
+  { id: 'newsletter', type: 'Checkbox', col: 0, row: 29, width: 6, height: 2 },
+  { id: 'privacy', type: 'Checkbox', col: 6, row: 29, width: 6, height: 2 },
+  { id: 'cancel', type: 'Button', col: 16, row: 32, width: 4, height: 3 },
+  { id: 'save', type: 'Button', col: 20, row: 32, width: 4, height: 3 },
+];

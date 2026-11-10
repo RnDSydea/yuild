@@ -1,0 +1,24 @@
+.sap-link,
+.material-link {
+  font-size: 0.875rem;
+  cursor: pointer;
+}
+
+.sap-link {
+  color: #0064d9;
+  text-decoration: none;
+}
+
+.material-link {
+  color: #1976d2;
+  text-decoration: underline;
+  text-decoration-color: rgba(25, 118, 210, 0.4);
+}
+
+.sap-link:hover {
+  text-decoration: underline;
+}
+
+.material-link:hover {
+  text-decoration-color: inherit;
+}

@@ -1,0 +1,32 @@
+.layout-generation-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin: 0 0 1rem;
+  padding: 0.75rem 1rem;
+  border-radius: var(--yuild-radius);
+  background: var(--yuild-panel);
+  color: var(--yuild-text-on-dark);
+  box-shadow: var(--yuild-shadow-soft);
+
+  &.warning {
+    border-left: 4px solid var(--yuild-accent);
+  }
+
+  &.preview {
+    border-left: 4px solid var(--yuild-success);
+  }
+}
+
+.layout-generation-text {
+  margin: 0;
+  font-size: 0.88rem;
+  line-height: 1.45;
+}
+
+.layout-generation-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}

@@ -1,0 +1,21 @@
+.sap-divider,
+.material-divider {
+  flex-shrink: 0;
+}
+
+.sap-divider { background-color: #d9d9d9; }
+.material-divider { background-color: rgba(0, 0, 0, 0.12); }
+
+.sap-divider-horizontal,
+.material-divider-horizontal {
+  width: 100%;
+  height: 1px;
+  margin: auto 0;
+}
+
+.sap-divider-vertical,
+.material-divider-vertical {
+  width: 1px;
+  height: 100%;
+  margin: 0 auto;
+}

@@ -1,32 +1,63 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo, useRef, useCallback } from "react";
 import "./home.scss";
 import "../../yuild-style.scss";
-import Button from "../../components/button/button";
-import Input from "../../components/input/input";
-import TextArea from "../../components/textArea/textArea";
-import RadioButton from "../../components/radio/radio";
-import Checkbox from "../../components/checkbox/checkbox";
-import Select from "../../components/select/select";
-import Toast from "../../components/toast/toast";
-import Card from "../../components/card/card";
-import YuildHeader from "../../components/yUildHeader/yUildHeader";
-import YuildBody from "../../components/yUildBody/yUildBody";
-import YuildFooter from "../../components/yUildFooter/yUildFooter";
-import Alert from "../../components/alert/alert";
-import Table from "../../components/table/table";
-import Dialog from "../../components/dialog/dialog";
-import Drawer from "../../components/drawer/drawer";
-import TrashIcon from '../../assets/trash-solid.svg';
 import DownloadIcon from '../../assets/download-icon.svg';
 import ArrowUp from '../../assets/arrow-up.svg';
-import HandIcon from '../../assets/drag-hand.svg';
 import ComponentsData from "../../assets/data/components.json";
-import JSZip from "jszip";
 import { saveAs } from "file-saver";
-import { render } from "@testing-library/react";
 import { useNavigate } from "react-router-dom";
 import GithubLogo from "../../assets/logo/github-mark-white.png";
 import YuildLogoLight from "../../assets/logo/yuild-logo-light.svg";
+import EditorGrid from "../../components/editorGrid/editorGrid";
+import BreakpointSwitcher from "../../components/breakpointSwitcher/breakpointSwitcher";
+import VersionPanel from "../../components/versionPanel/versionPanel";
+import PagePanel from "../../components/pagePanel/pagePanel";
+import CodePanel from "../../components/codePanel/codePanel";
+import { LIBRARY_COMPONENTS } from "../../components/componentRegistry";
+import { NavigationContext } from "../../components/navigationLink/navigationLink";
+import LayoutGenerationBar, { GENERATION_STAGES } from "../../components/layoutGenerationBar/layoutGenerationBar";
+import { BREAKPOINTS, DEFAULT_BREAKPOINT, ROW_HEIGHT } from "../../utils/grid/breakpoints";
+import { getOccupiedRows, scaleWidth } from "../../utils/grid/gridGeometry";
+import { isContainerType } from "../../utils/project/componentTypes";
+import {
+  LAYOUT_STATUS,
+  MODEL_ERRORS,
+  addComponent,
+  getChildItems,
+  getComponent,
+  getDescendantIds,
+  getLayoutItem,
+  moveComponent,
+  removeComponent,
+  resizeComponent,
+  updateComponentProps,
+} from "../../utils/project/pageModel";
+import {
+  PAGE_ERRORS,
+  addPage,
+  changePagePath,
+  clearPage,
+  createEmptyProject,
+  duplicatePage,
+  getPage,
+  normalizePagePath,
+  removePage,
+  renamePage,
+  replacePage,
+  updateProjectSettings,
+} from "../../utils/project/projectModel";
+import { loadProject, saveProject } from "../../utils/project/projectStorage";
+import { generateProjectCode } from "../../utils/codeGeneration/projectCode";
+import { createProjectArchive } from "../../utils/codeGeneration/projectArchive";
+import { REFLOW_ERRORS, SOURCE_BREAKPOINT, generateLayoutFromDesktop } from "../../utils/responsive/reflowEngine";
+import { findChangedComponents } from "../../utils/responsive/layoutDiff";
+import {
+  createVersion,
+  findVersion,
+  getRestoredProject,
+  loadVersions,
+  saveVersions,
+} from "../../utils/project/projectVersions";
 
 const ColorPicker = ({ colorProps, textProps }) => {
   return (
@@ -37,488 +68,421 @@ const ColorPicker = ({ colorProps, textProps }) => {
   );
 };
 
+const MIN_PAGE_ROWS = 60;
+
+const EXTRA_PAGE_ROWS = 10;
+
+const ERROR_MESSAGES = {
+  [MODEL_ERRORS.outOfBounds]: 'The component does not fit inside the grid.',
+  [MODEL_ERRORS.overlap]: 'That space is already occupied.',
+  [MODEL_ERRORS.invalidSize]: 'Width and height must be whole numbers greater than zero.',
+  [MODEL_ERRORS.invalidParent]: 'The component cannot be placed there.',
+  [MODEL_ERRORS.nestingTooDeep]: 'Containers can be nested at most two levels deep.',
+  [MODEL_ERRORS.childrenOutside]: 'The container would be smaller than its content.',
+  [MODEL_ERRORS.notFound]: 'The component no longer exists.',
+};
+
+const describeModelError = ({ error, breakpointId }) => {
+  if (error === MODEL_ERRORS.noSpace) {
+    return `There is no free space for the component in the ${BREAKPOINTS[breakpointId].label} layout.`;
+  }
+  return ERROR_MESSAGES[error] ?? 'The operation is not allowed.';
+};
+
+const describeReflowError = ({ error, problems }) => {
+  if (error === REFLOW_ERRORS.invalidSource) {
+    return 'The desktop layout has overlapping components or components outside the grid: fix them before generating.';
+  }
+  return `The generated layout would not be valid (${problems.length} problems found), so the current layout was left unchanged.`;
+};
+
+const PAGE_ERROR_MESSAGES = {
+  [PAGE_ERRORS.invalidName]: 'The page name cannot be empty.',
+  [PAGE_ERRORS.invalidPath]: 'Use a path like /about: lowercase letters, numbers and hyphens.',
+  [PAGE_ERRORS.duplicatePath]: 'Another page already uses this path.',
+  [PAGE_ERRORS.lastPage]: 'A project needs at least one page.',
+  [PAGE_ERRORS.notFound]: 'The page no longer exists.',
+};
+
+const RIGHT_PANEL_TABS = [
+  { id: 'component', label: 'Component' },
+  { id: 'document', label: 'Document' },
+  { id: 'versions', label: 'Versions' },
+];
+
+const TEXT_PROPS = [
+  { name: 'title', label: 'Title' },
+  { name: 'content', label: 'Content' },
+  { name: 'message', label: 'Message' },
+  { name: 'initials', label: 'Initials' },
+  { name: 'buttonLabel', label: 'Button label' },
+  { name: 'confirmLabel', label: 'Confirm label' },
+  { name: 'cancelLabel', label: 'Cancel label' },
+];
+
+const CHOICE_PROPS = [
+  { name: 'size', label: 'Size', options: ['small', 'medium', 'large'] },
+  { name: 'orientation', label: 'Orientation', options: ['horizontal', 'vertical'] },
+];
+
+const cloneProps = (props) => JSON.parse(JSON.stringify(props ?? {}));
+
 export const Home = () => {
   const navigate = useNavigate();
 
   const [editorMode, setEditorMode] = useState(true);
-  const [numColumns, setNumColumns] = useState(24);
-  const [numRows, setNumRows] = useState(72);
-  const [grid, setGrid] = useState([]);
-  const [highlightsCell, setHighlightsCell] = useState([]);
-  const [draggedComponent, setDraggedComponent] = useState(null);
-  const [patchObj, setPatchObj] = useState([]);
-  const [selectedProps, setSelectedProps] = useState({});
-  const [selecteIdPatch, setSelectedIdPatch] = useState('');
-  const [currentCode, setCurrentCode] = useState({});
-  const [currentCodeHighlight, setCurrentCodeHighlight] = useState('');
-  const [highlightedCode, setHighlightedCode] = useState('');
-  const [toggleComponent, setToggleComponent] = useState(true);
+  const [project, setProject] = useState(() => loadProject() ?? createEmptyProject());
+  const [activePageId, setActivePageId] = useState(() => project.pages[0].id);
+  const [versions, setVersions] = useState(() => loadVersions());
+  const [activeBreakpoint, setActiveBreakpoint] = useState(DEFAULT_BREAKPOINT);
+  const [selectedComponentId, setSelectedComponentId] = useState(null);
+  const [draggedComponentId, setDraggedComponentId] = useState(null);
+  const [dropPreview, setDropPreview] = useState(null);
+  const [editorMessage, setEditorMessage] = useState('');
+  const [editorNotice, setEditorNotice] = useState(null);
+  const [sizeDraft, setSizeDraft] = useState({ width: '', height: '' });
+  const [isCodePanelOpen, setIsCodePanelOpen] = useState(false);
+  const [rightPanelTab, setRightPanelTab] = useState('component');
+  const [generation, setGeneration] = useState(null);
   const [cssIncluded, setCssIncluded] = useState(true);
-  const [backgroundColorPage, setBackgroundColorPage] = useState('#ffffff');
-  const [documentName, setDocumentName] = useState('MyYUildApp');
-  
+  const [collapsedCategories, setCollapsedCategories] = useState([]);
+  const dragSourceRef = useRef(null);
+  const previewKeyRef = useRef(null);
 
-  const initGrid = () => {
-    const newGrid = [];
-    let index = 0;
-    for (let i = 0; i < numRows; i++) {
-      newGrid.push([]);
-      for (let j = 0; j < numColumns; j++) {
-        index++;
-        newGrid[i].push({
-          id: "yuild-" + index,
-          lunghezza: 1,
-          componente: null,
-          componentId: null,
-          number: index,
-        });
-      }
-    }
-    setGrid(newGrid);
-  };
+  const activePage = getPage(project, activePageId) ?? project.pages[0];
+  const selectedComponent = selectedComponentId ? getComponent(activePage, selectedComponentId) : null;
+  const selectedProps = selectedComponent?.props ?? {};
+  const selectedItem = selectedComponent ? getLayoutItem(activePage, activeBreakpoint, selectedComponentId) : null;
+  const breakpointColumns = BREAKPOINTS[activeBreakpoint].columns;
+  const activeLayout = activePage.layouts[activeBreakpoint];
+  const isPreviewingGeneration = generation?.stage === GENERATION_STAGES.preview;
+  const displayedPage = isPreviewingGeneration ? generation.page : activePage;
+  const canEdit = editorMode && !isPreviewingGeneration;
+  const previewWidth = BREAKPOINTS[activeBreakpoint].previewWidth;
 
   useEffect(() => {
-    const prevValues = localStorage.getItem('yuild-builded-page');
-    if (prevValues)
-    setPatchObj(JSON.parse(prevValues));
-  }, []);
+    saveProject(project);
+  }, [project]);
+
+  const generatedCode = useMemo(
+    () => (isCodePanelOpen ? generateProjectCode(project, { includeStylesheet: cssIncluded }) : null),
+    [isCodePanelOpen, project, cssIncluded]
+  );
+
+  const closeCodePanel = useCallback(() => setIsCodePanelOpen(false), []);
+
+  const selectedWidth = selectedItem ? String(selectedItem.width) : '';
+  const selectedHeight = selectedItem ? String(selectedItem.height) : '';
 
   useEffect(() => {
-    initGrid();
-  }, [numColumns, numRows]);
+    setSizeDraft({ width: selectedWidth, height: selectedHeight });
+  }, [selectedWidth, selectedHeight, selectedComponentId, activeBreakpoint]);
 
-  const getFormattedTimestamp = () => {
-    const date = new Date();
-    const day = String(date.getDate()).padStart(2, "0");
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const year = date.getFullYear();
-    const hours = String(date.getHours()).padStart(2, "0");
-    const minutes = String(date.getMinutes()).padStart(2, "0");
-    const seconds = String(date.getSeconds()).padStart(2, "0");
-    return `${day}/${month}/${year}-${hours}:${minutes}:${seconds}`;
+  const pageRows = Math.max(
+    MIN_PAGE_ROWS,
+    getOccupiedRows(getChildItems(displayedPage, activeBreakpoint, null)) + EXTRA_PAGE_ROWS,
+    dropPreview && dropPreview.parentId === null ? dropPreview.row + dropPreview.height + EXTRA_PAGE_ROWS : 0
+  );
+
+  const updateActivePage = (nextPage) => {
+    setProject(replacePage(project, nextPage));
   };
 
-  const handleDragStart = (component) => {
-    if(!editorMode){
-      return;
+  const applyModelResult = (result) => {
+    if (result.error) {
+      setEditorMessage(describeModelError(result));
+      return false;
     }
-    const uniqueId = `comp-${getFormattedTimestamp()}`;
-    setDraggedComponent({ ...component, componentId: uniqueId });
+    updateActivePage(result.page);
+    setEditorMessage('');
+    return true;
   };
 
-  const handleDrop = (index_row, index_col) => {
-    if (!draggedComponent) {
+  const resetDrag = () => {
+    dragSourceRef.current = null;
+    previewKeyRef.current = null;
+    setDropPreview(null);
+    setDraggedComponentId(null);
+  };
+
+  const resetPageState = () => {
+    setSelectedComponentId(null);
+    setGeneration(null);
+    setEditorMessage('');
+    setEditorNotice(null);
+  };
+
+  const handlePaletteDragStart = (event, catalogComponent) => {
+    if (!canEdit) {
+      event.preventDefault();
       return;
     }
-
-    const { lunghezza: newLunghezza, altezza: newAltezza } = draggedComponent;
-    const cellsToFill = calculateCellsToFill(
-      index_row,
-      index_col,
-      newLunghezza,
-      newAltezza
-    );
-
-    const exceedsLastRow = cellsToFill.some((cell) => cell.row >= numRows);
-    if (exceedsLastRow) {
-      setNumRows((prevNumRows) => prevNumRows + 1);
-      return;
-    }
-
-    const isOccupied = cellsToFill.some(
-      (cell) =>
-        grid[cell.row] &&
-        grid[cell.row][cell.columns] &&
-        grid[cell.row][cell.columns].componente
-    );
-
-    if (isOccupied) {
-      setHighlightsCell([]);
-      return;
-    }
-
-    const newGrid = [...grid];
-    cellsToFill.forEach(({ row, columns }) => {
-      newGrid[row][columns] = {
-        ...newGrid[row][columns],
-        lunghezza: newLunghezza,
-        componente: draggedComponent.nome,
-        componentId: draggedComponent.componentId,
-      };
-    });
-
-    const firstCellId = newGrid[cellsToFill[0].row][cellsToFill[0].columns].id;
-    const lastCellId =
-      newGrid[cellsToFill[cellsToFill.length - 1].row][
-        cellsToFill[cellsToFill.length - 1].columns
-      ].id;
-
-    const topCell = document.getElementById(firstCellId);
-    const bottomCell = document.getElementById(lastCellId);
-
-    const top = topCell.offsetTop;
-    const left = topCell.offsetLeft;
-    const bottom = bottomCell.offsetTop + bottomCell.offsetHeight;
-    const right = bottomCell.offsetLeft + bottomCell.offsetWidth;
-
-    const width = right - left;
-    const height = bottom - top;
-
-    const overlay_component = {
-      id: draggedComponent.componentId,
-      component: draggedComponent.nome,
-      componentId: draggedComponent.componentId,
-      render: draggedComponent.render,
-      top,
-      left,
-      width,
-      height,
-      props: draggedComponent.props,
-      cellsFilled: cellsToFill,
+    event.dataTransfer.effectAllowed = 'copy';
+    event.dataTransfer.setData('text/plain', catalogComponent.nome);
+    dragSourceRef.current = {
+      kind: 'new',
+      type: catalogComponent.nome,
+      width: scaleWidth(catalogComponent.lunghezza, BREAKPOINTS.desktop.columns, breakpointColumns),
+      height: catalogComponent.altezza,
+      props: catalogComponent.props,
+      grabCol: 0,
+      grabRow: 0,
     };
-
-    const newPatchObj = [...patchObj];
-    newPatchObj.push(overlay_component);
-
-    setGrid(newGrid);
-    setDraggedComponent(null);
-    setHighlightsCell([]);
-    setPatchObj(newPatchObj);
-    localStorage.setItem('yuild-builded-page', JSON.stringify(newPatchObj));
   };
 
-  const handleDragOver = (index_row, index_col) => {
-    if (draggedComponent) {
-      const { lunghezza, altezza } = draggedComponent;
-      const cellHighlightBorder = calculateCellsToFill(
-        index_row,
-        index_col,
-        lunghezza,
-        altezza
-      );
-
-      const totalNeededRows = index_row + altezza;
-
-      if (totalNeededRows > numRows) {
-        setNumRows(totalNeededRows);
-      }
-
-      const isOccupied = cellHighlightBorder.some(({ row, columns }) => {
-        return (
-          grid[row] &&
-          grid[row][columns] &&
-          grid[row][columns].componente !== null
-        );
-      });
-
-      const highlights = cellHighlightBorder.map(({ row, columns }) => ({
-        row,
-        columns,
-        occupied: isOccupied,
-      }));
-
-      setHighlightsCell(highlights);
-    } else {
-      setHighlightsCell([]);
-    }
-  };
-
-  const handleDragLeave = () => {
-    setHighlightsCell([]);
-  };
-
-  const calculateCellsToFill = (index_row, index_col, lunghezza, altezza) => {
-    const cells = [];
-    for (let i = 0; i < altezza; i++) {
-      for (let j = 0; j < lunghezza; j++) {
-        const cellIndex_row = index_row + i;
-        const cellIndex_col = index_col + j;
-        if (cellIndex_row < numRows && cellIndex_col < numColumns) {
-          cells.push({ row: cellIndex_row, columns: cellIndex_col });
-        }
-      }
-    }
-    return cells;
-  };
-
-  const handlePatchClick = (index) => {
-    const newPatchObj = patchObj.map((patch, i) => ({
-      ...patch,
-      selected: i === index ? !patch.selected : false,
-    }));
-    setPatchObj(newPatchObj);
-    setSelectedProps(patchObj[index].props);
-    document.addEventListener("click", handleOutsideClick);
-    setSelectedIdPatch(index);
-  };
-
-  const handleOutsideClick = (event) => {
-    const isClickOutside = !event.target.closest(".component-overlay");
-    if (isClickOutside) {
-      deselectComponent();
-      document.removeEventListener("click", handleOutsideClick);
-      setSelectedProps({});
-      setSelectedIdPatch('');
-    }
-  };
-
-  const deselectComponent = () => {
-    setPatchObj((prevPatchObj) =>
-      prevPatchObj.map((patch) => ({
-        ...patch,
-        selected: false,
-      }))
-    );
-  };
-
-  useEffect(() => {
-    return () => {
-      document.removeEventListener("click", handleOutsideClick);
-    };
-  }, []);
-
-  const handleDeletePatch = (index) => {
-    const patchToDelete = patchObj[index];
-    const { top, left, width, height } = patchToDelete;
-    const cellsToFree = [];
-
-    for (let row = 0; row < grid.length; row++) {
-      for (let col = 0; col < grid[row].length; col++) {
-        const cell = document.getElementById(grid[row][col].id);
-        if (
-          cell.offsetTop >= top &&
-          cell.offsetTop < top + height &&
-          cell.offsetLeft >= left &&
-          cell.offsetLeft < left + width
-        ) {
-          cellsToFree.push({ row, col });
-        }
-      }
-    }
-
-    const updatedGrid = [...grid];
-    cellsToFree.forEach(({ row, col }) => {
-      updatedGrid[row][col] = {
-        ...updatedGrid[row][col],
-        lunghezza: 1,
-        componente: null,
-        componentId: null,
-      };
-    });
-
-    const updatedPatchObj = patchObj.filter(
-      (_, patchIndex) => patchIndex !== index
-    );
-    setGrid(updatedGrid);
-    setPatchObj(updatedPatchObj);
-    setSelectedProps({});
-    setSelectedIdPatch('');
-    localStorage.setItem('yuild-builded-page', JSON.stringify(updatedPatchObj));
-  };
-
-  const handleDeletePatchClick = (event, index) => {
+  const handleItemDragStart = (event, item) => {
     event.stopPropagation();
-    handleDeletePatch(index);
+    if (!canEdit) {
+      event.preventDefault();
+      return;
+    }
+    const bounds = event.currentTarget.getBoundingClientRect();
+    const columnWidth = bounds.width / item.width;
+    const grabCol = Math.min(Math.max(Math.floor((event.clientX - bounds.left) / columnWidth), 0), item.width - 1);
+    const grabRow = Math.min(Math.max(Math.floor((event.clientY - bounds.top) / ROW_HEIGHT), 0), item.height - 1);
+    event.dataTransfer.effectAllowed = 'move';
+    event.dataTransfer.setData('text/plain', item.id);
+    dragSourceRef.current = { kind: 'existing', componentId: item.id, width: item.width, height: item.height, grabCol, grabRow };
+    setTimeout(() => setDraggedComponentId(item.id), 0);
   };
 
-  const handleDeletePatchFromProps= () => {
-    handleDeletePatch(selecteIdPatch);
+  const getDropTarget = (event, area) => {
+    const source = dragSourceRef.current;
+    const bounds = event.currentTarget.getBoundingClientRect();
+    const columnWidth = bounds.width / area.columns;
+    return {
+      parentId: area.parentId,
+      col: Math.floor((event.clientX - bounds.left) / columnWidth) - source.grabCol,
+      row: Math.floor((event.clientY - bounds.top) / ROW_HEIGHT) - source.grabRow,
+      width: source.kind === 'new' ? Math.min(source.width, area.columns) : source.width,
+      height: source.height,
+    };
+  };
+
+  const evaluateDrop = (target) => {
+    const source = dragSourceRef.current;
+    if (source.kind === 'new') {
+      return addComponent(
+        activePage,
+        activeBreakpoint,
+        { type: source.type, width: target.width, height: target.height, props: source.props },
+        target
+      );
+    }
+    return moveComponent(activePage, activeBreakpoint, source.componentId, target);
+  };
+
+  const handleAreaDragOver = (event, area) => {
+    if (!dragSourceRef.current) {
+      return;
+    }
+    event.preventDefault();
+    event.stopPropagation();
+    const target = getDropTarget(event, area);
+    const previewKey = `${target.parentId}|${target.col}|${target.row}|${target.width}`;
+    if (previewKey === previewKeyRef.current) {
+      return;
+    }
+    previewKeyRef.current = previewKey;
+    setDropPreview({ ...target, valid: evaluateDrop(target).error === null });
+  };
+
+  const handleAreaDrop = (event, area) => {
+    if (!dragSourceRef.current) {
+      return;
+    }
+    event.preventDefault();
+    event.stopPropagation();
+    const source = dragSourceRef.current;
+    const result = evaluateDrop(getDropTarget(event, area));
+    if (applyModelResult(result)) {
+      setSelectedComponentId(source.kind === 'new' ? result.componentId : source.componentId);
+    }
+    resetDrag();
+  };
+
+  const handleSelectComponent = (componentId) => {
+    if (!isPreviewingGeneration) {
+      setSelectedComponentId(componentId);
+    }
+  };
+
+  const handleDeleteComponent = (componentId) => {
+    const removedIds = [componentId, ...getDescendantIds(activePage, componentId)];
+    updateActivePage(removeComponent(activePage, activeBreakpoint, componentId));
+    if (removedIds.includes(selectedComponentId)) {
+      setSelectedComponentId(null);
+    }
+    setEditorMessage('');
+  };
+
+  const handleDeleteSelectedComponent = () => {
+    if (selectedComponentId) {
+      handleDeleteComponent(selectedComponentId);
+    }
+  };
+
+  const handleApplySize = (event) => {
+    event.preventDefault();
+    if (!selectedComponentId) {
+      return;
+    }
+    applyModelResult(
+      resizeComponent(activePage, activeBreakpoint, selectedComponentId, {
+        width: Number(sizeDraft.width),
+        height: Number(sizeDraft.height),
+      })
+    );
+  };
+
+  const handleBreakpointChange = (breakpointId) => {
+    setActiveBreakpoint(breakpointId);
+    setGeneration(null);
+    setEditorMessage('');
+    setEditorNotice(null);
+  };
+
+  const persistVersions = (nextVersions) => {
+    setVersions(saveVersions(nextVersions));
+  };
+
+  const showGeneratedPreview = () => {
+    const result = generateLayoutFromDesktop(activePage, activeBreakpoint);
+    setEditorNotice(null);
+    if (result.error) {
+      setGeneration(null);
+      setEditorMessage(describeReflowError(result));
+      return;
+    }
+    const changedComponentIds = findChangedComponents(activePage, result.page, activeBreakpoint);
+    const breakpointLabel = BREAKPOINTS[activeBreakpoint].label;
+    setSelectedComponentId(null);
+    setEditorMessage('');
+    if (changedComponentIds.length === 0) {
+      setGeneration(null);
+      setEditorNotice({
+        tone: 'info',
+        text: `The ${breakpointLabel} layout of ${activePage.name} already matches the one generated from desktop: nothing to change.`,
+      });
+      return;
+    }
+    setGeneration({
+      stage: GENERATION_STAGES.preview,
+      breakpointId: activeBreakpoint,
+      page: result.page,
+      changedComponentIds,
+    });
+  };
+
+  const handleGenerateFromDesktop = () => {
+    const hasManualLayout = activeLayout.status === LAYOUT_STATUS.manual && activeLayout.items.length > 0;
+    if (hasManualLayout) {
+      setGeneration({ stage: GENERATION_STAGES.confirmOverwrite, breakpointId: activeBreakpoint });
+      return;
+    }
+    showGeneratedPreview();
+  };
+
+  const handleConfirmGeneration = () => {
+    const breakpointLabel = BREAKPOINTS[generation.breakpointId].label;
+    const label = `Before generating ${breakpointLabel} layout of ${activePage.name}`;
+    persistVersions(createVersion(versions, project, label));
+    updateActivePage(generation.page);
+    setGeneration(null);
+    setEditorNotice({
+      tone: 'success',
+      text: `${breakpointLabel} layout generated from desktop: ${generation.changedComponentIds.length} of ${Object.keys(generation.page.components).length} components rearranged. The previous layout is saved in Versions.`,
+    });
+  };
+
+  const handleCancelGeneration = () => {
+    setGeneration(null);
+  };
+
+  const handleSaveVersion = (label) => {
+    persistVersions(createVersion(versions, project, label));
+  };
+
+  const handleRestoreVersion = (versionId) => {
+    const version = findVersion(versions, versionId);
+    if (!version) {
+      return;
+    }
+    persistVersions(createVersion(versions, project, 'Before restore'));
+    const restoredProject = getRestoredProject(version);
+    setProject(restoredProject);
+    setActivePageId(getPage(restoredProject, activePage.id) ? activePage.id : restoredProject.pages[0].id);
+    resetPageState();
+  };
+
+  const handleSelectPage = (pageId) => {
+    setActivePageId(pageId);
+    resetPageState();
+  };
+
+  const applyPageResult = (result) => {
+    if (result.error) {
+      return PAGE_ERROR_MESSAGES[result.error] ?? 'The operation is not allowed.';
+    }
+    setProject(result.project);
+    if (result.pageId !== activePage.id) {
+      setActivePageId(result.pageId);
+      resetPageState();
+    }
+    return null;
+  };
+
+  const handleAddPage = () => applyPageResult(addPage(project));
+
+  const handleRenamePage = (pageId, name) => applyPageResult(renamePage(project, pageId, name));
+
+  const handleChangePagePath = (pageId, path) => applyPageResult(changePagePath(project, pageId, normalizePagePath(path)));
+
+  const handleDuplicatePage = (pageId) => applyPageResult(duplicatePage(project, pageId));
+
+  const handleDeletePage = (pageId) => {
+    const result = removePage(project, pageId);
+    if (!result.error) {
+      persistVersions(createVersion(versions, project, `Before deleting page ${getPage(project, pageId).name}`));
+    }
+    return applyPageResult(result);
   };
 
   const handleDownloadZip = () => {
-    // const zip = new JSZip();
-
-    // patchObj.forEach((component) => {
-    //   const fileName = `test.html`;
-    //   const htmlContent = generateHtmlFile(component);
-    //   zip.file(fileName, htmlContent);
-    // });
-
-    // zip.generateAsync({ type: 'blob' }).then((content) => {
-    //   saveAs(content, 'components.zip');
-    // });
-    // console.log('patchObj', patchObj);
-
-    // let htmlString = '';
-    // const rows = {};
-
-    // // Creiamo una struttura di righe
-    // patchObj.forEach((item) => {
-    //   item.cellsFilled.forEach((cell) => {
-    //     if (!rows[cell.row]) {
-    //       rows[cell.row] = [];
-    //     }
-    //     // Aggiungiamo il componente nella riga specificata
-    //     rows[cell.row].push(`<${item.component.toLowerCase()} id="${item.id}" />`);
-    //   });
-    // });
-
-    // // Ora generiamo il codice HTML per ciascuna riga
-    // for (let row in rows) {
-    //   htmlString += `<div class="row" style="display: flex;">${rows[row].join('')}</div>`;
-    // }
-    // setCurrentCode(htmlString);
-
-    const htmlString = getComponentCode();
-    setCurrentCode(htmlString);
-
-    console.log(JSON.stringify(htmlString));
-    const codeHighlighted = highlightSyntax(htmlString);
-    setCurrentCodeHighlight(htmlString);
-
-    return;
-    const zip = new JSZip();
-    const fileName = `test.js`;
-    // const htmlContent = generateHtmlFile(htmlString);
-    zip.file(fileName, htmlString);
-
-    zip.generateAsync({ type: "blob" }).then((content) => {
-      saveAs(content, "components.zip");
-    });
-  };
-
-  const getComponentCode = () => {
-    const usedComponents = new Set();
-
-    patchObj.forEach((item) => {
-      usedComponents.add(item.component);
-    });
-
-    let imports = "import React from 'react';\n";
-
-    if (usedComponents.has("Button"))
-      imports += "import Button from '../../components/input/button/button';\n";
-    if (usedComponents.has("Input"))
-      imports += "import Input from '../../components/input/input/input';\n";
-    if (usedComponents.has("TextArea"))
-      imports +=
-        "import TextArea from '../../components/input/textArea/textArea';\n";
-    if (usedComponents.has("RadioButton"))
-      imports +=
-        "import RadioButton from '../../components/input/radio/radio';\n";
-    if (usedComponents.has("Checkbox"))
-      imports +=
-        "import Checkbox from '../../components/input/checkbox/checkbox';\n";
-    if (usedComponents.has("Select"))
-      imports += "import Select from '../../components/input/select/select';\n";
-    if (usedComponents.has("Toast"))
-      imports += "import Toast from '../../components/input/toast/toast';\n";
-    if (usedComponents.has("Card"))
-      imports += "import Card from '../../components/input/card/card';\n";
-    if (usedComponents.has("YuildHeader"))
-      imports +=
-        "import YuildHeader from '../../components/input/yUildHeader/yUildHeader';\n";
-    if (usedComponents.has("YuildBody"))
-      imports +=
-        "import YuildBody from '../../components/input/yUildBody/yUildBody';\n";
-    if (usedComponents.has("YuildFooter"))
-      imports +=
-        "import YuildFooter from '../../components/input/yUildFooter/yUildFooter';\n";
-    if (usedComponents.has("Alert"))
-      imports += "import Alert from '../../components/input/alert/alert';\n";
-    if (usedComponents.has("Table"))
-      imports += "import Table from '../../components/input/table/table';\n";
-    if (usedComponents.has("Dialog"))
-      imports += "import Dialog from '../../components/input/dialog/dialog';\n";
-    if (usedComponents.has("Drawer"))
-      imports += "import Drawer from '../../components/input/drawer/drawer';\n";
-
-    let jsx = "const App = () => (\n  <div>\n";
-
-    const rows = {};
-
-    patchObj.forEach((item) => {
-      item.cellsFilled.forEach((cell) => {
-        if (!rows[cell.row]) {
-          rows[cell.row] = [];
-        }
-
-        const ComponentTag = item.component;
-        const props = item.props;
-        let propsString = JSON.stringify(props)
-          .replace(/"(\w+)":/g, "$1=")
-          .replace(/"([^"]+)"/g, '"$1"');
-          // .replace(/{/g, '')
-          // .replace(/}/g, '');
-
-        rows[cell.row].push(`<${ComponentTag} ${propsString} />`);
+    const projectCode = generateProjectCode(project, { includeStylesheet: cssIncluded });
+    createProjectArchive(projectCode)
+      .generateAsync({ type: "blob" })
+      .then((content) => {
+        saveAs(content, `${projectCode.appName}.zip`);
       });
-    });
-
-    Object.keys(rows).forEach((row) => {
-      jsx += `    <div key={${row}} className="row" style={{ display: 'flex' }}>\n`;
-      rows[row].forEach((component) => {
-        jsx += `      ${component}\n`;
-      });
-      jsx += `    </div>\n`;
-    });
-
-    jsx += "  </div>\n);\n";
-
-    return imports + jsx + "export default App;";
-  };
-
-  const highlightSyntax = (code) => {
-    // // Escape HTML characters
-    // code = code
-    //   .replace(/&/g, '&amp;')
-    //   .replace(/</g, '&lt;')
-    //   .replace(/>/g, '&gt;');
-  
-    // // Highlight syntax with regex
-    // code = code
-    //   .replace(/\b(import|from|const|export|default)\b/g, '<span class="keyword">$1</span>') // keywords
-    //   .replace(/("[^"]*"|'[^']*')/g, '<span class="string">$1</span>') // strings with single or double quotes
-    //   .replace(/(\b\w+\b)(?=\s*={)/g, '<span class="property">$1</span>'); // object properties
-  
-    // return code;
-
-    const keywords = ['import', 'const', 'let', 'function'];
-    const codeWithMarkup = code.replace(/\b(import|const|let|function)\b/g, '<span class="keyword">$1</span>');
-    return codeWithMarkup;
-
   };
 
   const clearAll = () => {
-    const updatedGrid = [...grid];
-    for (let i = 0; i < updatedGrid.length; i++) {
-      for (let j = 0; j < updatedGrid[i].length; j++) {
-        updatedGrid[i][j] = {
-          id: updatedGrid[i][j].id,
-          lunghezza: 1,
-          componente: null,
-          componentId: null,
-        };
-      }
+    if (Object.keys(activePage.components).length > 0) {
+      persistVersions(createVersion(versions, project, `Before clearing ${activePage.name}`));
     }
-    setPatchObj([]);
-    setGrid(updatedGrid);
-    setSelectedProps({});
-    setSelectedIdPatch('');
-    localStorage.setItem('yuild-builded-page', '');
+    setProject(clearPage(project, activePage.id));
+    resetPageState();
   };
 
-  const componentMap = {
-    Button,
-    Input,
-    TextArea,
-    RadioButton,
-    Checkbox,
-    Select,
-    Toast,
-    Card,
-    YuildHeader,
-    YuildBody,
-    YuildFooter,
-    Alert,
+  const handleNavigateToPath = (path) => {
+    const targetPage = project.pages.find((page) => page.path === path);
+    if (targetPage && targetPage.id !== activePage.id) {
+      handleSelectPage(targetPage.id);
+    }
   };
+
+  const navigation = { navigateTo: handleNavigateToPath };
 
   const handleInputChangeProps = (e) => {
+    if (!selectedComponentId) {
+      return;
+    }
     const { name, value, type, checked } = e.target;
     const newValue = type === "checkbox" ? checked : value;
     const keys = name.split(".");
 
-    const updatedSelectedProps = { ...selectedProps };
+    const updatedSelectedProps = cloneProps(selectedProps);
     let ref = updatedSelectedProps;
 
     keys.slice(0, -1).forEach((key) => {
@@ -526,17 +490,19 @@ export const Home = () => {
       ref = ref[key];
     });
     ref[keys[keys.length - 1]] = newValue;
-    setSelectedProps(updatedSelectedProps);
-
-    const newPatchObj = patchObj.map((patch) =>
-      patch.selected ? { ...patch, props: updatedSelectedProps } : patch
-    );
-    setPatchObj(newPatchObj);
-    localStorage.setItem('yuild-builded-page', JSON.stringify(newPatchObj));
+    updateActivePage(updateComponentProps(activePage, selectedComponentId, updatedSelectedProps));
   };
 
   const handleInputDocName = (e) => {
-    setDocumentName(e.target.value);
+    setProject(updateProjectSettings(project, { name: e.target.value }));
+  };
+
+  const toggleCategory = (category) => {
+    setCollapsedCategories(
+      collapsedCategories.includes(category)
+        ? collapsedCategories.filter((collapsed) => collapsed !== category)
+        : [...collapsedCategories, category]
+    );
   };
 
   const navigateToLibrary = () => {
@@ -544,64 +510,83 @@ export const Home = () => {
   };
 
   const handleColorChange = (newColor) => {
-    setBackgroundColorPage(newColor.target.value);
+    setProject(updateProjectSettings(project, { backgroundColor: newColor.target.value }));
   };
 
   return (
     <div>
-      <div className="yuild-header">
-        <div className="y-d-flex y-gap-4 y-align-items-center">
-          <img src={YuildLogoLight} className="yuild-logo-header" />
-          <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
-            <span>Editor mode</span>
-            <div className="yuild-toggle-container">
-              <input
-                type="checkbox"
-                className="yuild-toggle-checkbox"
-                id="checkbox"
-                checked={editorMode}
-                onChange={(e) => setEditorMode(e.target.checked)}
-              ></input>
-              <label className="yuild-toggle-switch" htmlFor="checkbox">
-                <span className="yuild-toggle-slider"></span>
-              </label>
-            </div>
+      <header className="yuild-header">
+        <div className="yuild-header-group">
+          <img src={YuildLogoLight} className="yuild-logo-header" alt="Yuild" />
+          <span className="yuild-header-divider" aria-hidden="true" />
+          <div className="yuild-header-context">
+            <span className="yuild-header-project">{project.name}</span>
+            <span className="yuild-header-page">
+              {activePage.name} <code>{activePage.path}</code>
+            </span>
           </div>
-          <Button
-            label="Go to Library UI"
-            theme="sap"
-            onClick={() => navigateToLibrary()}
-            disabled
-          />
         </div>
-        <Select 
-            options={[
-              { value: 'option1', label: 'Option 1' },
-              { value: 'option2', label: 'Option 2' },
-              { value: 'option3', label: 'Option 3' },
-            ]} 
-            // onChange={handleSelectChange} 
-            variant="default" 
-            theme="material"
-          />
-        <div className="y-d-flex y-gap-4 y-align-items-center">
-          <Button label="Show Editor" onClick={handleDownloadZip} disabled/>
-          <Button label="Clear" onClick={clearAll} />
-          <button className="btn-header-yuild" onClick={handleDownloadZip}>
-            <img src={DownloadIcon} className="img-logo-btn"></img>
+        <div className="yuild-header-group">
+          <BreakpointSwitcher activeBreakpoint={activeBreakpoint} onChange={handleBreakpointChange} />
+          {activeBreakpoint !== SOURCE_BREAKPOINT && (
+            <>
+              <button
+                type="button"
+                className="yuild-button primary"
+                onClick={handleGenerateFromDesktop}
+                disabled={generation !== null}
+                title={`Rebuild the ${BREAKPOINTS[activeBreakpoint].label} layout of this page from the desktop layout, with a preview before applying it`}
+              >
+                Generate from desktop
+              </button>
+              <span className={`layout-status-badge ${activeLayout.status}`}>Layout: {activeLayout.status}</span>
+            </>
+          )}
+        </div>
+        <div className="yuild-header-group">
+          <label className="yuild-switch">
+            <input
+              type="checkbox"
+              className="yuild-switch-input"
+              checked={editorMode}
+              onChange={(e) => setEditorMode(e.target.checked)}
+            />
+            <span className="yuild-switch-track" aria-hidden="true">
+              <span className="yuild-switch-thumb" />
+            </span>
+            <span className="yuild-switch-label">Editor mode</span>
+          </label>
+          <button type="button" className="yuild-button ghost" onClick={navigateToLibrary}>
+            Go to Library UI
           </button>
-          <div className="y-d-flex y-align-items-center y-gap-2">
-            <a
-              href="https://github.com/RnDSydea/y-uild"
-              target="_blank"
-              className="y-d-flex y-align-items-center y-gap-2 y-link"
-            >
-              <img src={GithubLogo} alt="Github" className="logo-github" />
-              </a>
-              <span className="y-d-flex y-align-items-center y-gap-2">by </span>
-              <a href="https://www.sydea.com" target="_blank">
-                <span className="y-d-flex" style={{width:'60px'}}>
-                  <svg id="Livello_1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 772 188.18">
+          <button
+            type="button"
+            className={`yuild-button ghost ${isCodePanelOpen ? 'active' : ''}`}
+            aria-pressed={isCodePanelOpen}
+            onClick={() => setIsCodePanelOpen(!isCodePanelOpen)}
+          >
+            {isCodePanelOpen ? "Hide editor" : "Show editor"}
+          </button>
+          <button type="button" className="yuild-button ghost danger" onClick={clearAll}>
+            Clear
+          </button>
+          <button type="button" className="yuild-button primary" onClick={handleDownloadZip} aria-label="Download project">
+            <img src={DownloadIcon} className="yuild-button-icon" alt="" />
+            Export
+          </button>
+          <span className="yuild-header-divider" aria-hidden="true" />
+          <a
+            href="https://github.com/RnDSydea/yuild"
+            target="_blank"
+            rel="noreferrer"
+            className="yuild-header-link"
+            aria-label="Yuild on GitHub"
+          >
+            <img src={GithubLogo} alt="" className="logo-github" />
+          </a>
+          <a href="https://www.sydea.com" target="_blank" rel="noreferrer" className="yuild-header-link" aria-label="Sydea">
+            <span className="yuild-header-brand">
+              <svg id="Livello_1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 772 188.18">
                     <path d="M451.1,57v76.3c0,14.2-2.8,25.3-8.4,33.1-5.6,7.8-14.8,13.3-27.5,16.5s-30.3,4.8-52.9,4.8h-88.6v-68.8l43.6-66.5v103.2h43c12.3,0,21.7-.5,27.9-1.6,6.3-1.1,10.8-3.1,13.6-6.2,2.8-3.1,4.2-7.9,4.2-14.5V56.1c0-8.9-3.5-15.1-10.5-18.7-6.6-3.4-16.9-5.1-30.8-5.3h-.8l-71.2.1-48.8,79.7v75.8h-45.1v-75.2l-48.8-80.7c-31.3.1-68.8.4-76.7.4-15.2,0,1.5.1-7.4.1-12.2,0-20.7,10-20.7,15.8v10.5c0,9.8,8.3,14.8,24.9,14.8h38.1c21.4,0,36.9,3.9,46.5,11.9,9.6,7.9,14.5,19.9,14.5,36.1v12.4c0,22.4-4.2,35.9-16.2,44.6-10.8,7.7-26.4,9.2-36.9,9.2-9.5,0-14.3.7-28,.5-16.5-.1-56.9.3-88-.1v-30c31.9,0,77.5.1,89.5.1,21.6,0,34.5.8,34.5-19.4v-12.1c0-6.2-1.8-10.9-5.4-14.2-3.6-3.3-10-4.9-19.2-4.9h-37.6C20.6,107.5,0,91.1,0,58.3v-13.9C0,28,6.8,16,20.5,8.3,34.2.6,34.8.3,64.5.3h66.4l-.1-.1h51.2l39.6,73.4L260.9.2h101.2c6.2,0,12,.1,17.5.4,13.9.7,25.4,2.2,34.6,4.6,12.7,3.4,22.1,9.2,28,17.5,5.9,8.2,8.9,19.6,8.9,34.3Z" style={{fill: '#f6f6f6'}}/>
                     <polygon points="573.8 150.1 573.8 187.7 463.7 187.7 463.7 123.1 501.5 123.1 501.5 150.1 573.8 150.1" style={{fill: '#f6f6f6'}}/>
                     <path d="M598.1,123.1l-23.9,64.5h44.5l21.6-64.5h-42.2ZM742.9,123.1h-44l21.6,64.5h45.7l-23.3-64.5ZM698.5,0h-54.9l-33.6,91h41.2l17.9-53.4h1.1l17.9,53.4h43.3L698.5,0Z" style={{fill: '#f6f6f6'}}/>
@@ -609,161 +594,148 @@ export const Home = () => {
                     <polygon points="501.5 123.1 501.5 91 573.9 91 573.9 48.9 598.2 123.1 501.5 123.1" style={{fill: '#fece2f'}}/>
                     <polygon points="772 123.1 640.4 123.1 651.2 91 760.4 91 772 123.1" style={{fill: '#fece2f'}} />
                   </svg>
-                </span>
-            </a>
-          </div>
+            </span>
+          </a>
         </div>
-      </div>
+      </header>
 
       <div className="main-container">
         <div className="components-container">
+          <PagePanel
+            pages={project.pages}
+            activePageId={activePage.id}
+            onSelect={handleSelectPage}
+            onAdd={handleAddPage}
+            onRename={handleRenamePage}
+            onChangePath={handleChangePagePath}
+            onDuplicate={handleDuplicatePage}
+            onDelete={handleDeletePage}
+          />
+          <p className="palette-title">Components</p>
           {ComponentsData.map((section, index) => (
             <div key={index}>
-              {Object.entries(section).map(([key, value]) => (
-                <div key={key} className="row-key-component">
-                  <div className="y-d-flex y-gap-1 y-justify-content-between y-align-items-center row-key-menu">
-                    <p className="key-item-component">{key}</p>
-                    <img src={ArrowUp} className="icon-arrow-menu"></img>
-                  </div>
-                  {value.components.map((component, idx) => (
-                    <div
-                      key={`tile-${index}-${idx}`}
-                      className="tile"
-                      draggable
-                      onDragStart={() => handleDragStart(component)}
+              {Object.entries(section).map(([key, value]) => {
+                const isCollapsed = collapsedCategories.includes(key);
+                return (
+                  <div key={key} className="row-key-component">
+                    <button
+                      type="button"
+                      className={`row-key-menu ${isCollapsed ? 'collapsed' : ''}`}
+                      aria-expanded={!isCollapsed}
+                      onClick={() => toggleCategory(key)}
                     >
-                      <div className="row-drag-component">
-                        <div className="drag-icon">
-                          <svg fill="currentcolor" viewBox="0 0 24 24">
-                            <path d="M10,4A2,2,0,1,1,8,2,2,2,0,0,1,10,4ZM8,10a2,2,0,1,0,2,2A2,2,0,0,0,8,10Zm0,8a2,2,0,1,0,2,2A2,2,0,0,0,8,18ZM16,6a2,2,0,1,0-2-2A2,2,0,0,0,16,6Zm0,8a2,2,0,1,0-2-2A2,2,0,0,0,16,14Zm0,8a2,2,0,1,0-2-2A2,2,0,0,0,16,22Z" />
-                          </svg>
+                      <span className="key-item-component">{key}</span>
+                      <img src={ArrowUp} className="icon-arrow-menu" alt="" />
+                    </button>
+                    {!isCollapsed &&
+                      value.components.map((component, idx) => (
+                        <div
+                          key={`tile-${index}-${idx}`}
+                          className="tile"
+                          draggable={editorMode}
+                          onDragStart={(event) => handlePaletteDragStart(event, component)}
+                          onDragEnd={resetDrag}
+                        >
+                          <span className="drag-icon" aria-hidden="true">
+                            <svg fill="currentcolor" viewBox="0 0 24 24">
+                              <path d="M10,4A2,2,0,1,1,8,2,2,2,0,0,1,10,4ZM8,10a2,2,0,1,0,2,2A2,2,0,0,0,8,10Zm0,8a2,2,0,1,0,2,2A2,2,0,0,0,8,18ZM16,6a2,2,0,1,0-2-2A2,2,0,0,0,16,6Zm0,8a2,2,0,1,0-2-2A2,2,0,0,0,16,14Zm0,8a2,2,0,1,0-2-2A2,2,0,0,0,16,22Z" />
+                            </svg>
+                          </span>
+                          <span className="tile-name">{component.nome}</span>
+                          <span className="tile-size">
+                            {component.lunghezza}×{component.altezza}
+                          </span>
                         </div>
-                        <p>{component.nome}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              ))}
+                      ))}
+                  </div>
+                );
+              })}
             </div>
           ))}
         </div>
 
         <div className="drag-and-drop-container y-relative">
-          <div className="box-editor">
-            <pre className="editor-text">{currentCodeHighlight}</pre>
-          </div>
-          <div className="y-container box-page" style={{backgroundColor: backgroundColorPage}}>
-            {grid.map((row, index_row) => (
-              <div className="y-row" key={index_row}>
-                {row.map((cell, index_cell) => (
-                  <div
-                    className={`grid-cell ${editorMode ? "editable" : ""} ${
-                      highlightsCell.find(
-                        (e) => e.row === index_row && e.columns === index_cell
-                      )
-                        ? highlightsCell.find(
-                            (e) =>
-                              e.row === index_row && e.columns === index_cell
-                          ).occupied
-                          ? "occupied"
-                          : "highlight"
-                        : ""
-                    } y-col-1`}
-                    key={index_cell}
-                    id={cell.id}
-                    onDragOver={(e) => {
-                      e.preventDefault();
-                      handleDragOver(index_row, index_cell);
-                    }}
-                    onDragLeave={handleDragLeave}
-                    onDrop={() => handleDrop(index_row, index_cell)}
-                  ></div>
-                ))}
-              </div>
-            ))}
-            {patchObj.map((overlay, index) => {
-              const ComponentToRender = componentMap[overlay.component];
-              return (
-                <div
-                  key={index}
-                  className="overlay-container"
-                  style={{
-                    top: overlay.top,
-                    left: overlay.left,
-                    width: overlay.width,
-                    height: overlay.height,
-                  }}
-                >
-                  <div
-                    className={`component-overlay ${
-                      overlay.selected ? "selected" : ""
-                    }`}
-                    style={{
-                      boxShadow: overlay.selected ? "inset 0 0 0 2px red" : "",
-                    }}
-                    onClick={() => handlePatchClick(index)}
-                  >
-                    <div
-                      style={{ width: "100%", height: "100%" }}
-                      className={`yuild-d-${overlay.props.layout.display} ${
-                        overlay.props.layout.direction
-                          ? `yuild-flex-dir-${overlay.props.layout.direction}`
-                          : ""
-                      } 
-                        ${
-                          overlay.props.layout["vertical-align"]
-                            ? `yuild-vertical-align-${overlay.props.layout["vertical-align"]}`
-                            : ""
-                        } 
-                        ${
-                          overlay.props.layout["horizontal-align"]
-                            ? `yuild-horizontal-align-${overlay.props.layout["horizontal-align"]}`
-                            : ""
-                        } 
-                        `}
-                    >
-                      {ComponentToRender && (
-                        <ComponentToRender {...overlay.props} />
-                      )}
-                    </div>
-
-                    <div className="row-inner-tools y-d-flex y-gap-3 y-justify-content-between">
-                      <div className="button-drag-component y-d-flex y-gap-1 y-align-items-center">
-                        <div style={{width:'15px', height: 'auto'}}>
-                          <img src={HandIcon}></img>
-                        </div>
-                        <span>DRAG</span>
-                      </div>
-                      <div className="button-drag-component y-d-flex y-gap-1 y-align-items-center">
-                        <div style={{width:'15px', height: 'auto'}} className="y-d-flex " onClick={(e) => { e.stopPropagation(); handleDeletePatch(index)}}>
-                          <img src={TrashIcon}></img>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
+          {generation && (
+            <LayoutGenerationBar
+              stage={generation.stage}
+              breakpointLabel={BREAKPOINTS[generation.breakpointId].label}
+              changedCount={generation.changedComponentIds?.length ?? 0}
+              totalCount={Object.keys(activePage.components).length}
+              onContinue={showGeneratedPreview}
+              onConfirm={handleConfirmGeneration}
+              onCancel={handleCancelGeneration}
+            />
+          )}
+          {editorNotice && !editorMessage && (
+            <p className={`editor-notice ${editorNotice.tone}`} role="status">
+              {editorNotice.text}
+            </p>
+          )}
+          {editorMessage && (
+            <p className="editor-message" role="alert">
+              {editorMessage}
+            </p>
+          )}
+          <div
+            className={`y-container box-page editor-page ${isPreviewingGeneration ? 'previewing' : ''}`}
+            style={{
+              backgroundColor: project.backgroundColor,
+              width: previewWidth ? `${previewWidth}px` : "100%",
+            }}
+            onClick={() => setSelectedComponentId(null)}
+          >
+            <NavigationContext.Provider value={navigation}>
+              <EditorGrid
+                page={displayedPage}
+                breakpointId={activeBreakpoint}
+                parentId={null}
+                columns={breakpointColumns}
+                rows={pageRows}
+                editorMode={canEdit}
+                selectedComponentId={selectedComponentId}
+                draggedComponentId={draggedComponentId}
+                dropPreview={dropPreview}
+                highlightedComponentIds={isPreviewingGeneration ? generation.changedComponentIds : []}
+                componentMap={LIBRARY_COMPONENTS}
+                onAreaDragOver={handleAreaDragOver}
+                onAreaDrop={handleAreaDrop}
+                onItemDragStart={handleItemDragStart}
+                onItemDragEnd={resetDrag}
+                onSelect={handleSelectComponent}
+                onDelete={handleDeleteComponent}
+              />
+            </NavigationContext.Provider>
           </div>
         </div>
         <div className="component-details-column" onClick={(event) => event.stopPropagation()}>
           <div className="comp-col-props">
-            <div className="y-row">
-              <div className="y-col-6">
-                <button className={`btn-toggle ${toggleComponent ? 'selected':''}`} onClick={() => setToggleComponent(true)}>Component</button>
-              </div>
-              <div className="y-col-6">
-                <button className={`btn-toggle ${!toggleComponent ? 'selected':''}`} onClick={() => setToggleComponent(false)}>Document</button>
-              </div>
+            <div className="panel-tabs">
+              {RIGHT_PANEL_TABS.map(({ id, label }) => (
+                <button
+                  key={id}
+                  type="button"
+                  className={`panel-tab ${rightPanelTab === id ? 'selected' : ''}`}
+                  aria-pressed={rightPanelTab === id}
+                  onClick={() => setRightPanelTab(id)}
+                >
+                  {label}
+                </button>
+              ))}
             </div>
+            {rightPanelTab === 'component' && !selectedComponent && (
+              <p className="panel-empty">Select a component on the page to edit its size and properties.</p>
+            )}
+            {rightPanelTab === 'versions' && (
+              <VersionPanel versions={versions} onSave={handleSaveVersion} onRestore={handleRestoreVersion} />
+            )}
             {
-              !toggleComponent && 
+              rightPanelTab === 'document' && 
               <div className="y-d-flex y-flex-direction-column y-gap-3 y-py-3">
                 <div className="y-w-100 y-d-flex y-flex-direction-column">
                   <p className="props-comp-label">Name</p>
                   <input
                     spellCheck="false"
-                    value={documentName}
+                    value={project.name}
                     name="label"
                     onChange={handleInputDocName}
                     className="input-props-comp"
@@ -771,34 +743,28 @@ export const Home = () => {
                 </div>
                 <div>
                   <p className="props-comp-label">Background Color</p>
-                  <ColorPicker colorProps={{ onChange: handleColorChange, value: backgroundColorPage }} />
+                  <ColorPicker colorProps={{ onChange: handleColorChange, value: project.backgroundColor }} />
                 </div>
-                <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
-                  <div className="yuild-toggle-container">
-                    <input
-                      type="checkbox"
-                      className="yuild-toggle-checkbox"
-                      id="checkbox-css"
-                      checked={cssIncluded}
-                      onChange={(ev) => setCssIncluded(ev.target.checked)}
-                    ></input>
-                    <label className="yuild-toggle-switch" htmlFor="checkbox-css">
-                      <span className="yuild-toggle-slider"></span>
-                    </label>
-                  </div>
-                  <p className="y-m-0 props-comp-label">Include CSS</p>
-                </div>
+                <label className="yuild-switch">
+                  <input
+                    type="checkbox"
+                    className="yuild-switch-input"
+                    checked={cssIncluded}
+                    onChange={(ev) => setCssIncluded(ev.target.checked)}
+                  />
+                  <span className="yuild-switch-track" aria-hidden="true">
+                    <span className="yuild-switch-thumb" />
+                  </span>
+                  <span className="yuild-switch-label">Include CSS</span>
+                </label>
               </div>
             }
-            <div>
-
-            </div>
 
             <div className="y-d-flex y-justify-content-end y-py-2">
-            {Object.keys(selectedProps).length > 0 && toggleComponent &&
+            {selectedComponent && rightPanelTab === 'component' &&
               <>
                 <div 
-                  onClick={(e) => handleDeletePatchFromProps()}
+                  onClick={handleDeleteSelectedComponent}
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -811,8 +777,39 @@ export const Home = () => {
               </>
             }
             </div>
-            {Object.keys(selectedProps).length > 0 && toggleComponent && (
+            {selectedComponent && rightPanelTab === 'component' && (
               <>
+              <p className="props-comp-topic">{selectedComponent.type}</p>
+              <form className="row-comp-props editor-size-form" onSubmit={handleApplySize}>
+                <p className="props-comp-label">
+                  Size on {BREAKPOINTS[activeBreakpoint].label} (columns × rows)
+                </p>
+                <div className="y-d-flex y-gap-2 y-align-items-center">
+                  <input
+                    type="number"
+                    min="1"
+                    aria-label="Width in columns"
+                    value={sizeDraft.width}
+                    onChange={(e) => setSizeDraft({ ...sizeDraft, width: e.target.value })}
+                    className="input-props-comp editor-size-input"
+                  />
+                  <span>×</span>
+                  <input
+                    type="number"
+                    min="1"
+                    aria-label="Height in rows"
+                    value={sizeDraft.height}
+                    onChange={(e) => setSizeDraft({ ...sizeDraft, height: e.target.value })}
+                    className="input-props-comp editor-size-input"
+                  />
+                  <button type="submit" className="yuild-button primary small">Apply</button>
+                </div>
+                {selectedItem && (
+                  <p className="props-comp-label">
+                    Column {selectedItem.col + 1}, row {selectedItem.row + 1}
+                  </p>
+                )}
+              </form>
               <p className="props-comp-topic">Props</p>
                 {selectedProps.theme && (
                   <div className="row-comp-props">
@@ -853,6 +850,63 @@ export const Home = () => {
                       />
                     </div>
                   )}
+
+                {TEXT_PROPS.filter(({ name }) => typeof selectedProps[name] === 'string').map(({ name, label }) => (
+                  <div key={name} className="row-comp-props y-w-100 y-d-flex y-flex-direction-column">
+                    <p className="props-comp-label">{label}</p>
+                    <input
+                      value={selectedProps[name]}
+                      name={name}
+                      onChange={handleInputChangeProps}
+                      className="input-props-comp"
+                    />
+                  </div>
+                ))}
+                {typeof selectedProps.to === 'string' && (
+                  <div className="row-comp-props">
+                    <p className="props-comp-label">Link to page</p>
+                    <select
+                      name="to"
+                      aria-label="Link to page"
+                      value={selectedProps.to}
+                      onChange={handleInputChangeProps}
+                      className="input-props-comp"
+                    >
+                      {project.pages.map((page) => (
+                        <option key={page.id} value={page.path}>
+                          {page.name} ({page.path})
+                        </option>
+                      ))}
+                      {!project.pages.some((page) => page.path === selectedProps.to) && (
+                        <option value={selectedProps.to}>{selectedProps.to}</option>
+                      )}
+                    </select>
+                  </div>
+                )}
+                {CHOICE_PROPS.filter(({ name }) => typeof selectedProps[name] === 'string').map(({ name, label, options }) => (
+                  <div key={name} className="row-comp-props">
+                    <p className="props-comp-label">{label}</p>
+                    <select name={name} value={selectedProps[name]} onChange={handleInputChangeProps} className="input-props-comp">
+                      {options.map((option) => (
+                        <option key={option} value={option}>
+                          {option}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                ))}
+                {typeof selectedProps.defaultOpen === 'boolean' && (
+                  <div className="row-comp-props">
+                    <p className="props-comp-label">Open by default</p>
+                    <input
+                      type="checkbox"
+                      checked={selectedProps.defaultOpen}
+                      name="defaultOpen"
+                      onChange={handleInputChangeProps}
+                      className="checkbox-props-comp"
+                    />
+                  </div>
+                )}
 
                 {selectedProps.variant && (
                   <div className="row-comp-props">
@@ -916,6 +970,8 @@ export const Home = () => {
                     </div>
                   )}
 
+                {!isContainerType(selectedComponent.type) && (
+                <>
                 <p className="props-comp-topic" style={{ marginTop: "1rem" }}>
                   Layout
                 </p>
@@ -1164,11 +1220,19 @@ export const Home = () => {
                     </div>
                   </div>
                 </div>
+                </>
+                )}
               </>
             )}
           </div>
         </div>
       </div>
+      <CodePanel
+        isOpen={isCodePanelOpen}
+        files={generatedCode?.files ?? {}}
+        preferredFile={generatedCode?.pageFiles[activePage.id]?.[0]}
+        onClose={closeCodePanel}
+      />
     </div>
   );
 };

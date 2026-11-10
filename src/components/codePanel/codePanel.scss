@@ -1,0 +1,124 @@
+.code-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  width: min(640px, 92vw);
+  height: 100vh;
+  background: #0f1115;
+  color: #e6e8eb;
+  box-shadow: -24px 0 48px rgba(0, 0, 0, 0.35);
+  transform: translateX(105%);
+  visibility: hidden;
+  transition: transform 0.28s cubic-bezier(0.2, 0.8, 0.2, 1), visibility 0s linear 0.28s;
+
+  &.open {
+    transform: translateX(0);
+    visibility: visible;
+    transition: transform 0.28s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+}
+
+.code-panel-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.1rem 1.25rem 0.75rem;
+}
+
+.code-panel-title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.code-panel-subtitle {
+  margin: 0.2rem 0 0;
+  font-size: 0.75rem;
+  color: #8b93a1;
+}
+
+.code-panel-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.code-panel-button {
+  padding: 0.4rem 0.8rem;
+  border-radius: 0.5rem;
+  border: 1px solid #2c313a;
+  background: #1a1d23;
+  color: inherit;
+  font-size: 0.8rem;
+  cursor: pointer;
+
+  &:hover {
+    background: #232731;
+  }
+}
+
+.code-panel-close {
+  width: 2rem;
+  height: 2rem;
+  border: none;
+  border-radius: 0.5rem;
+  background: transparent;
+  color: #8b93a1;
+  font-size: 1.4rem;
+  line-height: 1;
+  cursor: pointer;
+
+  &:hover {
+    background: #1a1d23;
+    color: #fff;
+  }
+}
+
+.code-panel-files {
+  display: flex;
+  gap: 0.25rem;
+  padding: 0 1.25rem;
+  overflow-x: auto;
+  border-bottom: 1px solid #1f232b;
+}
+
+.code-panel-file {
+  padding: 0.5rem 0.75rem;
+  border: none;
+  border-bottom: 2px solid transparent;
+  background: transparent;
+  color: #8b93a1;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.75rem;
+  white-space: nowrap;
+  cursor: pointer;
+
+  &.selected {
+    color: #fff;
+    border-bottom-color: var(--yuild-accent, #e48205);
+  }
+}
+
+.code-panel-path {
+  margin: 0;
+  padding: 0.5rem 1.25rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.7rem;
+  color: #6b7280;
+}
+
+.code-panel-code {
+  flex: 1;
+  margin: 0;
+  padding: 0 1.25rem 1.5rem;
+  overflow: auto;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.8rem;
+  line-height: 1.6;
+  white-space: pre;
+  color: #d4d7dd;
+}

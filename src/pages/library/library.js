@@ -23,12 +23,23 @@ import Gear from '../../assets/gear-solid.svg'
 import Logout from '../../assets/right-from-bracket-solid.svg'
 import MoveIcon from '../../assets/arrows-up-down-left-right-solid.svg'
 import Delete from '../../assets/trash-solid.svg'
+import { useNavigate } from 'react-router-dom';
+import Avatar from '../../components/avatar/avatar';
+import Chip from '../../components/chip/chip';
+import Divider from '../../components/divider/divider';
+import Accordion from '../../components/accordion/accordion';
+import Breadcrumbs from '../../components/breadcrumbs/breadcrumbs';
+import Link from '../../components/link/link';
+import Menu from '../../components/menu/menu';
+import Tabs from '../../components/tabs/tabs';
+import YuildLogoLight from '../../assets/logo/yuild-logo-light.svg';
 // import ComponentsData from '../../../assets/data/components.json'
 import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
 import { render } from '@testing-library/react';
 
 export const Library = () => {
+  const navigate = useNavigate();
 
   // Inizializza lo stato come un oggetto con una chiave per ogni input/textarea
   const [inputValues, setInputValues] = useState({
@@ -548,8 +559,20 @@ export const Library = () => {
     setPatchObj(newPatchObj);
   };
 
+  const showcaseThemes = ['sap', 'material'];
+
   return (
-    <div style={{ padding: '20px' }}>
+    <div className="library-page">
+      <header className="library-header">
+        <div className="library-header-brand">
+          <img src={YuildLogoLight} className="yuild-logo-header" alt="Yuild" />
+          <span className="library-header-title">Library UI</span>
+        </div>
+        <button type="button" className="yuild-button primary" onClick={() => navigate('/')}>
+          Back to editor
+        </button>
+      </header>
+      <div className="library-content">
         <h1>Pulsanti in Stile SAP</h1>
         <h4>Normal</h4>
         <div style={{display:'flex', gap:'20px'}} >
@@ -1449,6 +1472,41 @@ export const Library = () => {
         <hr/>
         <h1>Tabella in Stile Material UI</h1>
         <Table theme="material" columns={columns} data={data} />
+        {showcaseThemes.map((theme) => (
+          <section key={theme} className="library-showcase">
+            <br/>
+            <hr/>
+            <h1>Navigazione e visualizzazione in stile {theme === 'sap' ? 'SAP' : 'Material UI'}</h1>
+            <div className="library-showcase-row">
+              <Avatar theme={theme} initials="AR" size="small" />
+              <Avatar theme={theme} initials="YU" />
+              <Avatar theme={theme} initials="SY" size="large" />
+              <Chip theme={theme} label="Default" />
+              <Chip theme={theme} label="Success" variant="success" />
+              <Chip theme={theme} label="Warning" variant="warning" />
+              <Chip theme={theme} label="Error" variant="error" />
+              <Chip theme={theme} label="Information" variant="information" />
+            </div>
+            <Divider theme={theme} />
+            <div className="library-showcase-row">
+              <Breadcrumbs theme={theme} items={[{ label: 'Home', to: '/' }, { label: 'Library', to: '/library' }, { label: 'Components' }]} />
+              <Link theme={theme} label="Back to the editor" to="/" />
+            </div>
+            <Menu theme={theme} items={[{ label: 'Editor', to: '/' }, { label: 'Library', to: '/library' }]} />
+            <div className="library-showcase-grid">
+              <Accordion theme={theme} title="What is Yuild?" content="A visual builder for React web apps with responsive layouts." defaultOpen />
+              <Tabs
+                theme={theme}
+                tabs={[
+                  { label: 'Desktop', content: '24 columns from 1200 px' },
+                  { label: 'Tablet', content: '12 columns from 768 px' },
+                  { label: 'Mobile', content: '6 columns below 768 px' },
+                ]}
+              />
+            </div>
+          </section>
+        ))}
       </div>
+    </div>
   );
 }

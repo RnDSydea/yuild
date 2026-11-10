@@ -1,0 +1,45 @@
+.sap-menu ul,
+.material-menu ul {
+  display: flex;
+  gap: 0.25rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.sap-menu-vertical ul,
+.material-menu-vertical ul {
+  flex-direction: column;
+}
+
+.sap-menu-item,
+.material-menu-item {
+  display: block;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background-color 0.15s ease;
+}
+
+.sap-menu-item {
+  border-radius: 0.5rem;
+  color: #32363a;
+}
+
+.sap-menu-item:hover {
+  background-color: #eaecee;
+  color: #0064d9;
+}
+
+.material-menu-item {
+  border-radius: 4px;
+  color: rgba(0, 0, 0, 0.87);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.material-menu-item:hover {
+  background-color: rgba(25, 118, 210, 0.08);
+  color: #1976d2;
+}

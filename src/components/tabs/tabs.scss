@@ -1,0 +1,44 @@
+.sap-tabs,
+.material-tabs {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+}
+
+.sap-tabs-list,
+.material-tabs-list {
+  display: flex;
+  gap: 0.25rem;
+  overflow-x: auto;
+  flex-shrink: 0;
+}
+
+.sap-tabs-list { border-bottom: 1px solid #d9d9d9; }
+.material-tabs-list { border-bottom: 1px solid rgba(0, 0, 0, 0.12); }
+
+.sap-tabs-tab,
+.material-tabs-tab {
+  padding: 0.6rem 1rem;
+  border: none;
+  border-bottom: 3px solid transparent;
+  background: transparent;
+  font: inherit;
+  font-size: 0.875rem;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.sap-tabs-tab { color: #556b82; }
+.sap-tabs-tab.active { color: #0064d9; border-bottom-color: #0064d9; font-weight: 600; }
+.material-tabs-tab { color: rgba(0, 0, 0, 0.6); text-transform: uppercase; letter-spacing: 0.03em; }
+.material-tabs-tab.active { color: #1976d2; border-bottom-color: #1976d2; }
+
+.sap-tabs-panel,
+.material-tabs-panel {
+  flex: 1;
+  padding: 0.75rem 0.25rem;
+  overflow: auto;
+  font-size: 0.875rem;
+}

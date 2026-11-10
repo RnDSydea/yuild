@@ -1,0 +1,18 @@
+export const nestedContainersDefinitions = [
+  { id: 'main', type: 'Section', col: 0, row: 0, width: 24, height: 30 },
+  { id: 'form-card', type: 'Card', parentId: 'main', col: 0, row: 0, width: 12, height: 28 },
+  { id: 'title', type: 'Input', parentId: 'form-card', col: 1, row: 1, width: 10, height: 5 },
+  { id: 'category', type: 'Select', parentId: 'form-card', col: 1, row: 7, width: 5, height: 5 },
+  { id: 'priority', type: 'Select', parentId: 'form-card', col: 6, row: 7, width: 5, height: 5 },
+  { id: 'description', type: 'TextArea', parentId: 'form-card', col: 1, row: 13, width: 10, height: 7 },
+  { id: 'submit', type: 'Button', parentId: 'form-card', col: 7, row: 22, width: 4, height: 3 },
+  { id: 'list-card', type: 'Card', parentId: 'main', col: 12, row: 0, width: 12, height: 20 },
+  { id: 'list', type: 'Table', parentId: 'list-card', col: 1, row: 1, width: 10, height: 15 },
+  { id: 'secondary', type: 'Section', col: 0, row: 31, width: 24, height: 12 },
+  { id: 'info-card', type: 'Card', parentId: 'secondary', col: 0, row: 0, width: 12, height: 10 },
+  { id: 'info-alert', type: 'Alert', parentId: 'info-card', col: 1, row: 1, width: 8, height: 3 },
+  { id: 'info-button', type: 'Button', parentId: 'info-card', col: 1, row: 5, width: 4, height: 3 },
+  { id: 'help-card', type: 'Card', parentId: 'secondary', col: 12, row: 0, width: 12, height: 10 },
+  { id: 'help-link', type: 'Link', parentId: 'help-card', col: 1, row: 1, width: 3, height: 2 },
+  { id: 'help-button', type: 'Button', parentId: 'help-card', col: 1, row: 5, width: 4, height: 3 },
+];
